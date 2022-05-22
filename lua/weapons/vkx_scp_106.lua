@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 SWEP.PrintName				= "SCP-106"
-SWEP.Author					= "Guthen"
+SWEP.Author					= "Vyrkx A.K.A. Guthen"
 SWEP.Instructions			= "Left click to send your victims in your dimension. Right click to laugh. Reload to send yourself to your dimension."
 SWEP.Category 				= "GuthSCP"
 
@@ -32,6 +32,8 @@ SWEP.HoldType 				= "passive"
 SWEP.ViewModel				= "models/weapons/v_hands.mdl"
 SWEP.WorldModel				= ""
 
+SWEP.GuthSCPLVL 		   	= 	0
+
 	
 function SWEP:PrimaryAttack()
 	if not SERVER then return end
@@ -42,18 +44,21 @@ function SWEP:PrimaryAttack()
 	if not trg:IsPlayer() or trg:GetPos():Distance( ply:GetPos() ) > 100 then return end
 
 	self:SetNextPrimaryFire( CurTime() + 1 )
-	trg:SlowTo106()
 end
 
 function SWEP:SecondaryAttack()
 	if not SERVER then return end
 	self:SetNextSecondaryFire( CurTime() + 2 )
 
-	self:GetOwner():EmitSound("guthen_scp/106/Laugh.ogg")
+	self:GetOwner():EmitSound( "guthen_scp/106/Laugh.ogg" )
 end
 
 function SWEP:Initialize()
 	self:SetHoldType( "normal" )
+end
+
+function SWEP:Deploy()
+	self.GuthSCPLVL = GuthSCP.Config.vkxscp106.keycard_level or 0
 end
 
 local canReload = true
