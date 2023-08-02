@@ -35,10 +35,9 @@ end
 --  pass through entities
 hook.Add( "ShouldCollide", "guthscp106:nocollide", function( ent_1, ent_2 )
     if not ent_1:IsPlayer() or not guthscp106.is_scp_106( ent_1 ) then return end
+	
+	if not config.traversable_entity_classes[ent_2:GetClass()] then return end  --  check not a traversable class
+	if guthscp106.passthrough_filter:is_in( ent_2 ) then return end  --  check filter blacklist
 
-	--  TODO: entity filter blacklist
-
-	if config.traversable_entity_classes[ent_2:GetClass()] then
-		return false
-	end
+	return false
 end )

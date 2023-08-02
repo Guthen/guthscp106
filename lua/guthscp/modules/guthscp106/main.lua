@@ -145,6 +145,9 @@ MODULE.menu = {
 function MODULE:init()
 	--  TODO: porting old config file 
 	--self:port_old_config_file( "guthscpbase/guthscp106.json" )
+
+	--  create filter
+	self.passthrough_filter = guthscp.map_entities_filter:new( "guthscp106_passthrough", "GuthSCP-106 Pass-through" )
 end
 
 guthscp.module.hot_reload( "guthscp106" )
