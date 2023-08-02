@@ -25,7 +25,7 @@ MODULE.menu = {
 				type = "Bool",
 				name = "No-Clip",
 				id = "noclip",
-				desc = "If checked, SCP-106 will be able to noclip at his will",
+				desc = "If checked, SCP-106 will be able to noclip",
 				default = false,
 			},
 			{
