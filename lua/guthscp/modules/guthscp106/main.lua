@@ -29,6 +29,13 @@ MODULE.menu = {
 				default = false,
 			},
 			{
+				type = "Bool",
+				name = "Immortal",
+				id = "immortal",
+				desc = "If checked, SCP-106 can't take damage",
+				default = true,
+			},
+			{
 				type = "Number",
 				name = "Keycard Level",
 				id = "keycard_level",
