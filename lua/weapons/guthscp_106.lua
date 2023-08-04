@@ -4,7 +4,6 @@ if not guthscp then
 end
 
 local guthscp106 = guthscp.modules.guthscp106
-local config = guthscp.configs.guthscp106
 
 AddCSLuaFile()
 
@@ -60,8 +59,8 @@ function SWEP:SecondaryAttack()
 	
 	--  play sound
 	local ply = self:GetOwner()
-	if #config.sound_laugh > 0 then
-		ply:EmitSound( config.sound_laugh )
+	if #guthscp.configs.guthscp106.sound_laugh > 0 then
+		ply:EmitSound( guthscp.configs.guthscp106.sound_laugh )
 	end
 
 	self:SetNextSecondaryFire( CurTime() + 2.0 )
@@ -72,7 +71,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:Deploy()
-	self.GuthSCPLVL = config.keycard_level
+	self.GuthSCPLVL = guthscp.configs.guthscp106.keycard_level
 end
 
 local canReload = true
