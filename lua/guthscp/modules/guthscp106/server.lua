@@ -10,7 +10,7 @@ function guthscp106.apply_movement_speed_scale( ply, scale, time )
 	--  apply new speed
 	if not timer.Exists( timer_id ) then
 		ply:SetWalkSpeed( config.walk_speed * scale )
-		ply:SetRunSpeed( config.walk_speed * scale )
+		ply:SetRunSpeed( config.run_speed * scale )
 	end
 
 	--  revert after time
@@ -18,7 +18,7 @@ function guthscp106.apply_movement_speed_scale( ply, scale, time )
 		if not guthscp106.is_scp_106( ply ) then return end
 		
 		ply:SetWalkSpeed( config.walk_speed )
-		ply:SetRunSpeed( config.walk_speed )
+		ply:SetRunSpeed( config.run_speed )
 	end )
 end
 

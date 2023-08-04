@@ -25,6 +25,14 @@ MODULE.menu = {
 				type = "Number",
 				name = "Walk Speed",
 				id = "walk_speed",
+				desc = "Speed of walking for SCP-106, in hammer units",
+				default = 130,
+			},
+			{
+				type = "Number",
+				name = "Run Speed",
+				id = "run_speed",
+				desc = "Speed of running for SCP-106, in hammer units",
 				default = 130,
 			},
 			{

@@ -9,10 +9,10 @@ if SERVER then
 
     guthscp106.filter.event_added:add_listener( "guthscp106:setup", function( ply )
 		ply:SetWalkSpeed( config.walk_speed )
-		ply:SetRunSpeed( config.walk_speed )
+		ply:SetRunSpeed( config.run_speed )
 
 		ply:SetCustomCollisionCheck( true )
-		guthscp.sound.play( ply, config.sound_idle, config.sound_hear_distance, true, .5 )
+		guthscp.sound.play( ply, config.sound_idle, config.sound_hear_distance, true, 0.5 )
 	end )
 	guthscp106.filter.event_removed:add_listener( "guthscp106:reset", function( ply )
 		ply:SetCustomCollisionCheck( false )
