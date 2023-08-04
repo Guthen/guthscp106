@@ -104,14 +104,14 @@ function SWEP:Reload()
 
 	local w = ScrW() * .2
 
-	--  > init frame
+	--  init frame
 	local frame = vgui.Create( "DFrame" )
 	frame:SetWide( w )
 	frame:SetTitle( "Pocket Dimension" )
 	frame:SetDraggable( false )
 	frame:MakePopup()
 
-	--  > actions group
+	--  actions group
 	local label = frame:Add( "DLabel" )
 	label:Dock( TOP )
 	label:DockMargin( 0, 0, 0, 2 )
@@ -126,13 +126,13 @@ function SWEP:Reload()
 		button.DoClick = v.action
 	end
 
-	--  > size frame to children and center
+	--  size frame to children and center
 	frame:InvalidateLayout( true )
 	frame:SizeToChildren( false, true )
 	frame:Center()
 end
 
---	> nets
+--  nets
 if SERVER then
 	util.AddNetworkString( "guthscp:106" )
 
