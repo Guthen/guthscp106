@@ -8,6 +8,9 @@ if SERVER then
 	guthscp106.filter:listen_weapon_users( "guthscp_106" )  --  being SCP-106 just mean a player having the weapon 
 
     guthscp106.filter.event_added:add_listener( "guthscp106:setup", function( ply )
+		ply:SetWalkSpeed( config.walk_speed )
+		ply:SetRunSpeed( config.walk_speed )
+
 		ply:SetCustomCollisionCheck( true )
 		guthscp.sound.play( ply, config.sound_idle, config.sound_hear_distance, true, .5 )
 	end )
@@ -30,12 +33,12 @@ function guthscp106.is_scp_106( ply )
 	return guthscp106.filter:is_in( ply )
 end
 
---  pass through entities
-hook.Add( "ShouldCollide", "guthscp106:nocollide", function( ent_1, ent_2 )
-    if not ent_1:IsPlayer() or not guthscp106.is_scp_106( ent_1 ) then return end
+--  pass-through entities
+hook.Add( "ShouldCollide", "guthscp106:nocollide", function( scp106, target )
+    if not scp106:IsPlayer() or not guthscp106.is_scp_106( scp106 ) then return end
 	
-	if not config.traversable_entity_classes[ent_2:GetClass()] then return end  --  check not a traversable class
-	if guthscp106.passthrough_filter:is_in( ent_2 ) then return end  --  check filter blacklist
+	if not config.passthrough_entity_classes[target:GetClass()] then return end  --  check not a traversable class
+	if guthscp106.passthrough_filter:is_in( target ) then return end  --  check filter blacklist
 
 	return false
 end )

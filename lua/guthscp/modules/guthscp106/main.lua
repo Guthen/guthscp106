@@ -22,6 +22,12 @@ MODULE.menu = {
 			--  general
 			"General",
 			{
+				type = "Number",
+				name = "Walk Speed",
+				id = "walk_speed",
+				default = 130,
+			},
+			{
 				type = "Bool",
 				name = "No-Clip",
 				id = "noclip",
@@ -51,11 +57,12 @@ MODULE.menu = {
 					return guthscp.modules.guthscpkeycard == nil
 				end,
 			},
+			"Pass-through",
 			{
 				type = "String[]",
-				name = "Traversable Entity Classes",
-				id = "traversable_entity_classes",
-				desc = "List of entity classes that SCP-106 can walk through",
+				name = "Entity Classes",
+				id = "passthrough_entity_classes",
+				desc = "List of entity classes that SCP-106 can pass-through",
 				default = guthscp.table.create_set( {
 					"func_door",
 					"func_button",
@@ -68,6 +75,29 @@ MODULE.menu = {
 					"prop_vehicle_jeep",
 				} ),
 				is_set = true,
+			},
+			{
+				type = "Bool",
+				name = "Should Change Speed",
+				id = "should_passthrough_change_speed",
+				desc = "Should passing-through change movement speed of SCP-106?",
+				default = true,
+			},
+			{
+				type = "Number",
+				name = "Speed Factor",
+				id = "passthrough_speed_factor",
+				desc = "If 'Should Change Speed' is enabled, how much should it scale SCP-106's movement speed?",
+				default = 0.7,
+				min = 0.1,
+			},
+			{
+				type = "Number",
+				name = "Speed Exit Time",
+				id = "passthrough_speed_time",
+				desc = "If 'Should Change Speed' is enabled, for how much time should SCP-106's movement speed scale after ending its pass-through state? Must be above 0.",
+				default = 0.1,
+				min = 0.1,
 			},
 			"Sounds",
 			{
