@@ -46,7 +46,7 @@ function SWEP:PrimaryAttack()
 	
 	local ply = self:GetOwner()
 	local trg = ply:GetEyeTrace().Entity
-	if not trg:IsPlayer() or trg:GetPos():Distance( ply:GetPos() ) > 100 then 
+	if not trg:IsPlayer() or trg:GetPos():Distance( ply:GetPos() ) > guthscp.configs.guthscp106.distance_unit then 
 		self:SetNextPrimaryFire( CurTime() + 0.1 )
 		return 
 	end
