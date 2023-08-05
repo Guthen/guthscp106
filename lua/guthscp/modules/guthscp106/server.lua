@@ -60,7 +60,9 @@ hook.Add( "SetupMove", "guthscp106:passthrough-speed", function( ply, mv, cmd )
 		endpos = ply:GetPos(),
 		filter = ply,
 	}, ply )
-	if not tr.Hit or not config.passthrough_entity_classes[tr.Entity:GetClass()] then return end  --  check hit and not a traversable class
+	if not tr.Hit then return end  --  check hit
+	if not config.passthrough_entity_classes[tr.Entity:GetClass()] and  --  check not a traversable class
+	   not ( config.passthrough_living_entities and guthscp.world.is_living_entity( tr.Entity ) ) then return end  --  check living entity
 	
 	--  scale movement speed
 	guthscp106.apply_movement_speed_scale( ply, config.passthrough_speed_factor, config.passthrough_speed_time )

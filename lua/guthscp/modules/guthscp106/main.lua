@@ -110,6 +110,13 @@ MODULE.menu = {
 			},
 			{
 				type = "Bool",
+				name = "Pass-through Living Entities",
+				id = "passthrough_living_entities",
+				desc = "Can SCP-106 pass-through players, NPCs and NextBots?",
+				default = true,
+			},
+			{
+				type = "Bool",
 				name = "Should Change Speed",
 				id = "should_passthrough_change_speed",
 				desc = "Should passing-through change movement speed of SCP-106?",

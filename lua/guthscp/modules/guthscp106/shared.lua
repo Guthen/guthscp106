@@ -36,7 +36,12 @@ end
 --  pass-through entities
 hook.Add( "ShouldCollide", "guthscp106:nocollide", function( scp106, target )
     if not scp106:IsPlayer() or not guthscp106.is_scp_106( scp106 ) then return end
-	
+
+	--  pass-through living entity
+	if config.passthrough_living_entities and guthscp.world.is_living_entity( target ) then 
+		return false 
+	end
+
 	if not config.passthrough_entity_classes[target:GetClass()] then return end  --  check not a traversable class
 	if guthscp106.passthrough_filter:is_in( target ) then return end  --  check filter blacklist
 
