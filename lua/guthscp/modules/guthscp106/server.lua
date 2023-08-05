@@ -1,6 +1,10 @@
 local guthscp106 = guthscp.modules.guthscp106
 local config = guthscp.configs.guthscp106
 
+function guthscp106.teleport_to( ent, pos )
+	--  TODO: animate
+	ent:SetPos( pos )
+end
 
 function guthscp106.apply_movement_speed_scale( ply, scale, time )
 	if not guthscp106.is_scp_106( ply ) then return end

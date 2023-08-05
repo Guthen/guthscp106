@@ -65,6 +65,14 @@ MODULE.menu = {
 					return guthscp.modules.guthscpkeycard == nil
 				end,
 			},
+			{
+				type = "Vector",
+				name = "Dimension Position",
+				id = "dimension_position",
+				desc = "Position of the pocket dimension to teleport SCP-106 and his victims",
+				default = vector_origin,
+				show_usepos = true,
+			},
 			"Weapon",
 			{
 				type = "Number",

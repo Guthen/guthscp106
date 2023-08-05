@@ -51,6 +51,7 @@ function SWEP:PrimaryAttack()
 		return 
 	end
 
+	guthscp106.teleport_to( target, guthscp.configs.guthscp106.dimension_position )
 	self:SetNextPrimaryFire( CurTime() + 1.0 )
 end
 
@@ -142,11 +143,11 @@ if SERVER then
 		local is_exit = net.ReadBool()
 		if is_exit then 
 			if not ply.SCP106LastPos then return end
-			ply:SlowTo106( nil, ply.SCP106LastPos ) 
+			guthscp106.teleport_to( ply, ply.SCP106LastPos )
 			ply.SCP106LastPos = nil
 		else
 			ply.SCP106LastPos = ply:GetPos()
-			ply:SlowTo106()
+			guthscp106.teleport_to( ply, guthscp.configs.guthscp106.dimension_position )
 		end
 	end )
 end
