@@ -73,6 +73,13 @@ MODULE.menu = {
 				desc = "Maximum distance where SCP-106 can attacks his targets. 1 meter ~= 40 unit",
 				default = 3 * 40,
 			},
+			{
+				type = "Number",
+				name = "Attack Hull Size",
+				id = "attack_hull_size",
+				desc = "Size of tolerance for targeting in units. The higher the number, the easier it is to aim, but the less precise it is",
+				default = 5,
+			},
 			"Pass-through",
 			{
 				type = "String[]",
@@ -81,6 +88,7 @@ MODULE.menu = {
 				desc = "List of entity classes that SCP-106 can pass-through",
 				default = guthscp.table.create_set( {
 					"func_door",
+					"func_door_rotating",
 					"func_button",
 					"func_breakable",
 					"prop_physics",

@@ -45,8 +45,8 @@ function SWEP:PrimaryAttack()
 	if not SERVER then return end
 	
 	local ply = self:GetOwner()
-	local trg = ply:GetEyeTrace().Entity
-	if not trg:IsPlayer() or trg:GetPos():Distance( ply:GetPos() ) > guthscp.configs.guthscp106.distance_unit then 
+	local target = guthscp.world.player_trace_attack( ply, guthscp.configs.guthscp106.distance_unit, guthscp.configs.guthscp106.attack_hull_size ).Entity
+	if not IsValid( target ) or not guthscp.world.is_living_entity( target ) then 
 		self:SetNextPrimaryFire( CurTime() + 0.1 )
 		return 
 	end
