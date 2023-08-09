@@ -1,13 +1,60 @@
 local guthscp106 = guthscp.modules.guthscp106
 local config = guthscp.configs.guthscp106
 
-function guthscp106.teleport_to( ent, pos )
+function guthscp106.sink_to( ent, pos, should_unsink )
+	ent:SetMoveType( MOVETYPE_NONE )
+	ent:SetPos( ent:GetPos() - Vector( 0, 0, 32 ) )
+	
 	--  TODO: animate
-	ent:SetPos( pos )
+	local SINK_TIME = 2.0
+	local SINK_STEPS = 20
+	local SINK_OFFSET_BY_STEP = ent:GetViewOffset() / SINK_STEPS
+	local start_pos = ent:GetPos()
+	--print( SINK_TIME / SINK_STEPS, SINK_OFFSET_BY_STEP )
+
+	local step = 0
+	timer.Create( "guthscp106:sink-" .. ent:EntIndex(), SINK_TIME / SINK_STEPS, SINK_STEPS, function()
+		step = step + 1
+		if step == SINK_STEPS then
+			if should_unsink then
+				step = 0
+				ent:SetPos( pos - ent:GetViewOffset() )
+				timer.Create( "guthscp106:unsink-" .. ent:EntIndex(), SINK_TIME / SINK_STEPS, SINK_STEPS, function()
+					ent:SetPos( pos + SINK_OFFSET_BY_STEP * step )
+
+					step = step + 1
+					if step == SINK_STEPS then
+						ent:SetMoveType( MOVETYPE_WALK )
+					end
+				end )
+			else
+				ent:SetPos( pos )
+				ent:SetMoveType( MOVETYPE_WALK )
+			end
+		else
+			ent:SetPos( start_pos - SINK_OFFSET_BY_STEP * step )
+		end
+	end )
+end
+
+function guthscp106.create_sinkhole( pos )
+	local hole = ents.Create( "guthscp106_sinkhole" )
+	hole:SetPos( pos )
+	hole:Spawn()
+
+	return hole
+end
+
+function guthscp106.set_walking_sinkhole( ply, sinkhole )
+	ply:SetNWEntity( "guthscp106:sinkhole", sinkhole )
+end
+
+function guthscp106.get_walking_sinkhole( ply )
+	return ply:GetNWEntity( "guthscp106:sinkhole", nil )
 end
 
 function guthscp106.apply_movement_speed_scale( ply, scale, time )
-	if not guthscp106.is_scp_106( ply ) then return end
+	--if not guthscp106.is_scp_106( ply ) then return end
 
 	local timer_id = "guthscp106:revert-speed-" .. ply:SteamID64()
 
@@ -19,7 +66,7 @@ function guthscp106.apply_movement_speed_scale( ply, scale, time )
 
 	--  revert after time
 	timer.Create( timer_id, time, 1, function()
-		if not guthscp106.is_scp_106( ply ) then return end
+		--if not guthscp106.is_scp_106( ply ) then return end
 		
 		ply:SetWalkSpeed( config.walk_speed )
 		ply:SetRunSpeed( config.run_speed )
@@ -40,13 +87,12 @@ hook.Add( "PlayerShouldTakeDamage", "guthscp106:invinsible", function( ply, atta
 end )
 
 hook.Add( "PlayerFootstep", "guthscp106:footstep", function( ply, pos, foot, sound, volume )
-	if not guthscp106.is_scp_106( ply ) then return end
+	if not guthscp106.is_scp_106( ply ) and not IsValid( guthscp106.get_walking_sinkhole( ply ) ) then return end
 
 	local sounds = config.sounds_footstep
 	if #sounds == 0 then return end
 
-	ply:EmitSound( sounds[math.random( #sounds )], nil, nil, math.max( 0.4, volume ) )
-
+	ply:EmitSound( sounds[math.random( #sounds )], nil, nil, volume )
 	return true
 end )
 

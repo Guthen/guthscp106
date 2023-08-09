@@ -51,7 +51,7 @@ function SWEP:PrimaryAttack()
 		return 
 	end
 
-	guthscp106.teleport_to( target, guthscp.configs.guthscp106.dimension_position )
+	guthscp106.sink_to( target, guthscp.configs.guthscp106.dimension_position )
 	self:SetNextPrimaryFire( CurTime() + 1.0 )
 end
 
@@ -83,17 +83,25 @@ function SWEP:Reload()
 		{
 			text = "Enter Pocket Dimension",
 			action = function()
-				net.Start( "guthscp:106" )
-					net.WriteBool( false )
-				net.SendToServer()
+				guthscp106.use_ability( guthscp106.ABILITIES.ENTER_DIMENSION )
 			end
 		},
 		{
 			text = "Exit Pocket Dimension",
 			action = function()
-				net.Start( "guthscp:106" )
-					net.WriteBool( true )
-				net.SendToServer()
+				guthscp106.use_ability( guthscp106.ABILITIES.EXIT_DIMENSION )
+			end
+		},
+		{
+			text = "Place Waypoint",
+			action = function()
+				guthscp106.use_ability( guthscp106.ABILITIES.PLACE_SINKHOLE )
+			end
+		},
+		{
+			text = "Go to Waypoint",
+			action = function()
+				guthscp106.use_ability( guthscp106.ABILITIES.ENTER_SINKHOLE )
 			end
 		},
 	}
@@ -130,26 +138,6 @@ function SWEP:Reload()
 	frame:InvalidateLayout( true )
 	frame:SizeToChildren( false, true )
 	frame:Center()
-end
-
---  nets
-if SERVER then
-	util.AddNetworkString( "guthscp:106" )
-
-	net.Receive( "guthscp:106", function( len, ply )
-		if not guthscp106.is_scp_106( ply ) then return end
-		
-		--  TODO: fix by creating functions
-		local is_exit = net.ReadBool()
-		if is_exit then 
-			if not ply.SCP106LastPos then return end
-			guthscp106.teleport_to( ply, ply.SCP106LastPos )
-			ply.SCP106LastPos = nil
-		else
-			ply.SCP106LastPos = ply:GetPos()
-			guthscp106.teleport_to( ply, guthscp.configs.guthscp106.dimension_position )
-		end
-	end )
 end
 
 --  add to spawnmenu

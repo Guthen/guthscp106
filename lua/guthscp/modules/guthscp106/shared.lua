@@ -47,3 +47,46 @@ hook.Add( "ShouldCollide", "guthscp106:nocollide", function( scp106, target )
 
 	return false
 end )
+
+if SERVER then
+	util.AddNetworkString( "guthscp106:ability" )
+
+	net.Receive( "guthscp106:ability", function( len, ply )
+		local ability = net.ReadUInt( guthscp106._ability_ubits )
+		guthscp106.use_ability( ply, ability )
+	end )
+
+	function guthscp106.use_ability( ply, ability )
+		if not guthscp106.is_scp_106( ply ) then return end
+
+		--  TODO: find a nicer way of coding abilities
+		if ability == guthscp106.ABILITIES.EXIT_DIMENSION then 
+			if not IsValid( ply.guthscp106_exit_sinkhole ) then return end
+			guthscp106.sink_to( ply, ply.guthscp106_exit_sinkhole:GetPos(), true )
+
+			local sinkhole = ply.guthscp106_exit_sinkhole
+			timer.Simple( 3.0, function()
+				if not IsValid( sinkhole ) then return end
+				sinkhole:QueueRemove()
+			end )
+			ply.guthscp106_exit_sinkhole = nil
+		elseif ability == guthscp106.ABILITIES.ENTER_DIMENSION then
+			ply.guthscp106_exit_sinkhole = guthscp106.create_sinkhole( ply:GetPos() )
+			guthscp106.sink_to( ply, guthscp.configs.guthscp106.dimension_position )
+		elseif ability == guthscp106.ABILITIES.PLACE_SINKHOLE then
+			if IsValid( ply.guthscp106_waypoint ) then
+				ply.guthscp106_waypoint:QueueRemove()
+			end
+			ply.guthscp106_waypoint = guthscp106.create_sinkhole( ply:GetPos() )
+		elseif ability == guthscp106.ABILITIES.ENTER_SINKHOLE then
+			if not IsValid( ply.guthscp106_waypoint ) then return end
+			guthscp106.sink_to( ply, ply.guthscp106_waypoint:GetPos(), true )
+		end
+	end
+else
+	function guthscp106.use_ability( ability )
+		net.Start( "guthscp106:ability" )
+			net.WriteUInt( ability, guthscp106._ability_ubits )
+		net.SendToServer()
+	end
+end

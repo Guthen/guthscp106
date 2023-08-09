@@ -15,6 +15,14 @@ local MODULE = {
 	},
 }
 
+MODULE.ABILITIES = {
+	ENTER_DIMENSION = 0,
+	EXIT_DIMENSION = 1,
+	PLACE_SINKHOLE = 2,
+	ENTER_SINKHOLE = 3,
+}
+MODULE._ability_ubits = guthscp.helpers.number_of_ubits( MODULE.ABILITIES.ENTER_SINKHOLE )
+
 MODULE.menu = {
 	--  config
 	config = {
@@ -138,6 +146,64 @@ MODULE.menu = {
 				default = 0.1,
 				min = 0.1,
 			},
+			"Sinkhole",
+			{
+				type = "Number",
+				name = "Spawn Time",
+				id = "sinkhole_anim_spawn_time",
+				desc = "In seconds, how much time it takes for a sinkhole to do its spawn animation?",
+				default = 2.0,
+				min = 0.1,
+			},
+			{
+				type = "Number",
+				name = "Remove Time",
+				id = "sinkhole_anim_remove_time",
+				desc = "In seconds, how much time it takes for a sinkhole to do its remove animation?",
+				default = 3.0,
+				min = 0.1,
+			},
+			{
+				type = "Number",
+				name = "Size",
+				id = "sinkhole_size",
+				desc = "Size of sinkholes, in Hammer units",
+				default = 100.0,
+				min = 20.0,
+			},
+			{
+				type = "Number",
+				name = "Trigger Size Ratio",
+				id = "sinkhole_trigger_size_ratio",
+				desc = "Size of sinkholes hitbox in relation to their 'Size', in percent (changes need to re-create entities to take effect)",
+				default = 0.8,
+				min = 0.1,
+				max = 1.0,
+			},
+			{
+				type = "Bool",
+				name = "Can Sink",
+				id = "sinkhole_can_sink",
+				desc = "Can sinkholes sink non-SCP-106 players in the Pocket Dimension?",
+				default = true,
+			},
+			{
+				type = "Number",
+				name = "Sink Distance",
+				id = "sinkhole_distance_ratio",
+				desc = "If 'Can Sink' is enabled, distance for non-SCP-106 players to sink in sinkholes in relation to their 'Size', in percent. Must be lower than 'Trigger Size Ratio'",
+				default = 0.2,
+				min = 0.1,
+				max = 1.0,
+			},
+			{
+				type = "Number",
+				name = "Offset Z-axis",
+				id = "sinkhole_offset_z",
+				desc = "In hammer units, the offset in the Z-axis to project the sinkhole on the surface",
+				default = 32.0,
+				min = 0.0,
+			},
 			"Sounds",
 			{
 				type = "Number",
@@ -169,6 +235,16 @@ MODULE.menu = {
 					"guthen_scp/106/steppd1.ogg",
 					"guthen_scp/106/steppd2.ogg",
 					"guthen_scp/106/steppd3.ogg",
+				},
+			},
+			{
+				type = "String[]",
+				name = "Corrosion",
+				id = "sounds_corrosion",
+				desc = "Sounds randomly played when SCP-106 places a sinkhole",
+				default = {
+					"guthen_scp/106/corrosion1.ogg",
+					"guthen_scp/106/corrosion2.ogg",
 				},
 			},
 			guthscp.config.create_apply_button(),
