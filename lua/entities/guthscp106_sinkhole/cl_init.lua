@@ -1,6 +1,8 @@
 include( "shared.lua" )
 
-local ANIM_IN_TIME = 2.0
+local guthscp106 = guthscp.modules.guthscp106
+local config = guthscp.configs.guthscp106
+
 function ENT:Initialize()
 	self.projected_pos, self.projected_normal = self:TracePosAndNormal()
 	self.anim_time = CurTime()
@@ -17,7 +19,7 @@ function ENT:Initialize()
 
 	--  adapt render bounds
 	--  it avoids no-draw optimisation because its center is not looked at
-	local size = guthscp.configs.guthscp106.sinkhole_size * 0.5
+	local size = config.sinkhole_size * 0.5
 	local bounds = Vector( size, size, size )
 	self:SetRenderBounds( -bounds, bounds )
 end
@@ -25,8 +27,8 @@ end
 function ENT:TracePosAndNormal()
 	local pos = self:GetPos()
 	local tr = util.TraceLine( {
-		start = pos + Vector( 0, 0, guthscp.configs.guthscp106.sinkhole_offset_z ),
-		endpos = pos - Vector( 0, 0, guthscp.configs.guthscp106.sinkhole_offset_z ),
+		start = pos + Vector( 0, 0, config.sinkhole_offset_z ),
+		endpos = pos - Vector( 0, 0, config.sinkhole_offset_z ),
 		mask = MASK_SOLID_BRUSHONLY,
 	} )
 
@@ -39,11 +41,11 @@ function ENT:UpdateAnimation()
 
 	--  spawn anim
 	if queue_remove_time <= -1.0 then
-		local anim_time = guthscp.configs.guthscp106.sinkhole_anim_spawn_time
+		local anim_time = config.sinkhole_anim_spawn_time
 		anim_ratio = math.min( CurTime() - self.anim_time, anim_time ) / anim_time
 	--  remove anim
 	else
-		local anim_time = guthscp.configs.guthscp106.sinkhole_anim_remove_time
+		local anim_time = config.sinkhole_anim_remove_time
 		anim_ratio = math.min( queue_remove_time - CurTime(), anim_time ) / anim_time
 	end
 
@@ -59,11 +61,11 @@ local material_corrosion = Material( "guthscp/106/decal_corrosion" )
 local material_cracks = Material( "guthscp/106/decal_cracks" )
 function ENT:Draw()
 	--debugoverlay.Axis( self:GetPos(), self:GetAngles(), 15.0, FrameTime() )
-	--debugoverlay.Line( self:GetPos() - Vector( 0, 0, guthscp.configs.guthscp106.sinkhole_offset_z ), self:GetPos() + Vector( 0, 0, guthscp.configs.guthscp106.sinkhole_offset_z ), FrameTime(), Color( 255, 0, 0 ) )
+	--debugoverlay.Line( self:GetPos() - Vector( 0, 0, config.sinkhole_offset_z ), self:GetPos() + Vector( 0, 0, config.sinkhole_offset_z ), FrameTime(), Color( 255, 0, 0 ) )
 
 	self:UpdateAnimation()
 	
-	local size = guthscp.configs.guthscp106.sinkhole_size
+	local size = config.sinkhole_size
 	local pos, normal = self.projected_pos, self.projected_normal
 
 	--  cracks

@@ -4,6 +4,7 @@ if not guthscp then
 end
 
 local guthscp106 = guthscp.modules.guthscp106
+local config = guthscp.configs.guthscp106
 
 AddCSLuaFile()
 
@@ -45,13 +46,13 @@ function SWEP:PrimaryAttack()
 	if not SERVER then return end
 	
 	local ply = self:GetOwner()
-	local target = guthscp.world.player_trace_attack( ply, guthscp.configs.guthscp106.distance_unit, guthscp.configs.guthscp106.attack_hull_size ).Entity
+	local target = guthscp.world.player_trace_attack( ply, config.distance_unit, config.attack_hull_size ).Entity
 	if not IsValid( target ) or not guthscp.world.is_living_entity( target ) then 
 		self:SetNextPrimaryFire( CurTime() + 0.1 )
 		return 
 	end
 
-	guthscp106.sink_to( target, guthscp.configs.guthscp106.dimension_position )
+	guthscp106.sink_to( target, config.dimension_position )
 	self:SetNextPrimaryFire( CurTime() + 1.0 )
 end
 
@@ -60,8 +61,8 @@ function SWEP:SecondaryAttack()
 	
 	--  play sound
 	local ply = self:GetOwner()
-	if #guthscp.configs.guthscp106.sound_laugh > 0 then
-		ply:EmitSound( guthscp.configs.guthscp106.sound_laugh )
+	if #config.sound_laugh > 0 then
+		ply:EmitSound( config.sound_laugh )
 	end
 
 	self:SetNextSecondaryFire( CurTime() + 2.0 )
@@ -72,7 +73,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:Deploy()
-	self.GuthSCPLVL = guthscp.configs.guthscp106.keycard_level
+	self.GuthSCPLVL = config.keycard_level
 end
 
 local canReload = true
