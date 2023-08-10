@@ -101,11 +101,7 @@ hook.Add( "SetupMove", "guthscp106:passthrough-speed", function( ply, mv, cmd )
 	if not guthscp106.is_scp_106( ply ) then return end
 
 	--  get passing-through entity
-	local tr = util.TraceEntity( {
-		start = ply:GetPos(),
-		endpos = ply:GetPos(),
-		filter = ply,
-	}, ply )
+	local tr = guthscp.world.safe_entity_trace( ply )
 	if not tr.Hit then return end  --  check hit
 	if not config.passthrough_entity_classes[tr.Entity:GetClass()] and  --  check not a traversable class
 	   not ( config.passthrough_living_entities and guthscp.world.is_living_entity( tr.Entity ) ) then return end  --  check living entity
