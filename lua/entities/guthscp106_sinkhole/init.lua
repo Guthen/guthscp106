@@ -56,8 +56,8 @@ function ENT:Touch( ent )
 	if ent:GetPos():DistToSqr( self:GetPos() ) >= dist * dist then
 		--  slow players
 		--  TODO: use non-106 players movement speed
-		if ent:IsPlayer() then
-			guthscp.modules.guthscp106.apply_movement_speed_scale( ent, 0.8, 0.1 )
+		if config.should_sinkhole_change_speed and ent:IsPlayer() then
+			guthscp106.apply_movement_speed_scale( ent, config.sinkhole_trigger_speed_factor, config.sinkhole_speed_time )
 		end
 		return 
 	end 
