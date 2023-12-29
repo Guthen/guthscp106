@@ -109,7 +109,7 @@ timer.Create( "guthscp106:dimension-corrosion", 1.0, 0, function()
 	--  TODO: find a cleaner and more performant way of iterating through entities in a zone
 	for i, ent in ipairs( ents.GetAll() ) do
 		if not guthscp.world.is_living_entity( ent ) then continue end
-		if guthscp.is_scp( ent ) then continue end
+		if not config.dimension_can_corrode_scps and guthscp.is_scp( ent ) then continue end
 		if not guthscp106.is_in_pocket_dimension( ent ) then continue end
 
 		local damage = math.max( 1.0, ent:GetMaxHealth() * config.dimension_corrosion_damage )

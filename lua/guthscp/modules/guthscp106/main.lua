@@ -92,6 +92,13 @@ MODULE.menu = {
 				min = 0.0,
 				max = 1.0,
 			},
+			{
+				type = "Bool",
+				name = "Can Corrode SCPs",
+				id = "dimension_can_corrode_scps",
+				desc = "If checked, the dimension can corrodes SCPs Teams",
+				default = false,
+			},
 			"Weapon",
 			{
 				type = "Number",
@@ -122,6 +129,13 @@ MODULE.menu = {
 				desc = "Damage to apply when SCP-106 attacks a target in the pocket dimension. Set to 0.0 to disable the damage",
 				default = 80,
 				min = 0.0,
+			},
+			{
+				type = "Bool",
+				name = "Can Attack SCPs",
+				id = "dimension_can_attack_scps",
+				desc = "If checked, SCP-106 can attacks SCPs Teams and teleports them in his dimension",
+				default = false,
 			},
 			"Pass-through",
 			{

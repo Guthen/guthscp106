@@ -52,6 +52,10 @@ function SWEP:PrimaryAttack()
 		self:SetNextPrimaryFire( CurTime() + 0.1 )
 		return 
 	end
+	self:SetNextPrimaryFire( CurTime() + 1.0 )
+
+	--  depending on config, avoid attacking SCPs Teams
+	if not config.dimension_can_attack_scps and guthscp.is_scp( target ) then return end
 
 	--  TODO: in-pocket-dimension condition
 	if guthscp106.is_in_pocket_dimension( target ) then
@@ -66,8 +70,6 @@ function SWEP:PrimaryAttack()
 			target:TakeDamage( config.attack_damage, ply, self )
 		end
 	end
-
-	self:SetNextPrimaryFire( CurTime() + 1.0 )
 end
 
 function SWEP:SecondaryAttack()
