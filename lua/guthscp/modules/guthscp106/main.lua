@@ -6,7 +6,7 @@ local MODULE = {
 	icon = "guthscp/icons/guthscp106.png",
 	--version_url = "https://raw.githubusercontent.com/Guthen/guthscp173/update-to-guthscpbase-remaster/lua/guthscp/modules/guthscp173/main.lua",
 	dependencies = {
-		base = "2.0.0",
+		base = "2.2.0",
 	},
 	requires = {
 		["shared.lua"] = guthscp.REALMS.SHARED,
