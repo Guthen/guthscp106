@@ -5,7 +5,6 @@ local config = guthscp.configs.guthscp106
 
 function ENT:Initialize()
 	self:FindPosAndNormal()
-	self.anim_time = CurTime()
 
 	--  setup cracks animation
 	self.cracks_angle = math.random( 0, 360 )
@@ -42,7 +41,7 @@ function ENT:UpdateAnimation()
 	--  spawn anim
 	if queue_remove_time <= -1.0 then
 		local anim_time = config.sinkhole_anim_spawn_time
-		anim_ratio = math.min( CurTime() - self.anim_time, anim_time ) / anim_time
+		anim_ratio = math.min( CurTime() - self:GetCreationTime(), anim_time ) / anim_time
 	--  remove anim
 	else
 		local anim_time = config.sinkhole_anim_remove_time
