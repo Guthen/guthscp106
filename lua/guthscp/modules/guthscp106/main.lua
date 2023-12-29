@@ -235,6 +235,14 @@ MODULE.menu = {
 				min = 0.1,
 			},
 			{
+				type = "Number",
+				name = "Placement Distance",
+				id = "sinkhole_placement_distance",
+				desc = "In Hammer units, how much distance from another sinkhole is required to place one? Set to 0 to disable",
+				default = 256,
+				min = 0,
+			},
+			{
 				type = "Bool",
 				name = "Can Sink",
 				id = "sinkhole_can_sink",

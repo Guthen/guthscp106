@@ -49,6 +49,20 @@ function guthscp106.is_scp_106( ply )
 	return guthscp106.filter:is_in( ply )
 end
 
+function guthscp106.is_valid_sinkhole_position( pos )
+	--  check distance from others sinkholes
+	local dist_sqr = config.sinkhole_placement_distance * config.sinkhole_placement_distance
+	if dist_sqr > 0.0 then
+		for i, sinkhole in ipairs( ents.FindByClass( "guthscp106_sinkhole" ) ) do
+			if pos:DistToSqr( sinkhole:GetPos() ) <= dist_sqr then
+				return false
+			end
+		end
+	end
+
+	return true
+end
+
 --  pass-through entities
 hook.Add( "ShouldCollide", "guthscp106:nocollide", function( scp106, target )
     if not scp106:IsPlayer() or not guthscp106.is_scp_106( scp106 ) then return end
@@ -90,24 +104,36 @@ if SERVER then
 			end )
 			ply.guthscp106_exit_sinkhole = nil
 		elseif ability == guthscp106.ABILITIES.ENTER_DIMENSION then
+			local sinkhole_pos = ply:GetPos() 
+			if not guthscp106.is_valid_sinkhole_position( sinkhole_pos ) then
+				ply:PrintMessage( HUD_PRINTTALK, "Another sinkhole is too close from your position!" )
+				return
+			end
+
 			--  delete previous sinkhole
 			if IsValid( ply.guthscp106_exit_sinkhole ) then 
 				ply.guthscp106_exit_sinkhole:QueueRemove()
 			end
 
 			--  create new sinkhole
-			ply.guthscp106_exit_sinkhole = guthscp106.create_sinkhole( ply:GetPos() )
+			ply.guthscp106_exit_sinkhole = guthscp106.create_sinkhole( sinkhole_pos )
 
 			--  sink to dimension
 			guthscp106.sink_to( ply, guthscp.configs.guthscp106.dimension_position )
 		elseif ability == guthscp106.ABILITIES.PLACE_SINKHOLE then
+			local sinkhole_pos = ply:GetPos() 
+			if not guthscp106.is_valid_sinkhole_position( sinkhole_pos ) then
+				ply:PrintMessage( HUD_PRINTTALK, "Another sinkhole is too close from your position!" )
+				return
+			end
+
 			--  delete previous sinkhole
 			if IsValid( ply.guthscp106_waypoint ) then
 				ply.guthscp106_waypoint:QueueRemove()
 			end
 
 			--  create new sinkhole
-			ply.guthscp106_waypoint = guthscp106.create_sinkhole( ply:GetPos() )
+			ply.guthscp106_waypoint = guthscp106.create_sinkhole( sinkhole_pos )
 		elseif ability == guthscp106.ABILITIES.ENTER_SINKHOLE then
 			if not IsValid( ply.guthscp106_waypoint ) then return end
 
