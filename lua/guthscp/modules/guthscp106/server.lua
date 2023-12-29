@@ -91,8 +91,10 @@ hook.Add( "PlayerShouldTakeDamage", "guthscp106:invinsible", function( ply, atta
 end )
 
 hook.Add( "PlayerFootstep", "guthscp106:footstep", function( ply, pos, foot, sound, volume )
-	--  only accepts SCP-106 or players walking on a sinkhole
-	if not guthscp106.is_scp_106( ply ) and not IsValid( guthscp106.get_walking_sinkhole( ply ) ) then return end
+	--  only accepts SCP-106 or players walking on a sinkhole or players in pocket dimension
+	if not guthscp106.is_scp_106( ply ) and 
+	   not IsValid( guthscp106.get_walking_sinkhole( ply ) ) and 
+	   not guthscp106.is_in_pocket_dimension( ply ) then return end
 
 	--  check footstep sounds are available
 	local sounds = config.sounds_footstep
