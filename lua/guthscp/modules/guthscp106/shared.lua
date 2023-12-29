@@ -70,8 +70,11 @@ if SERVER then
 		--  TODO: find a nicer way of coding abilities
 		if ability == guthscp106.ABILITIES.EXIT_DIMENSION then 
 			if not IsValid( ply.guthscp106_exit_sinkhole ) then return end
+
+			--  sink to exit sinkhole
 			guthscp106.sink_to( ply, ply.guthscp106_exit_sinkhole:GetPos(), true )
 
+			--  delete exit sinkhole
 			local sinkhole = ply.guthscp106_exit_sinkhole
 			timer.Simple( 3.0, function()
 				if not IsValid( sinkhole ) then return end
@@ -79,15 +82,28 @@ if SERVER then
 			end )
 			ply.guthscp106_exit_sinkhole = nil
 		elseif ability == guthscp106.ABILITIES.ENTER_DIMENSION then
+			--  delete previous sinkhole
+			if IsValid( ply.guthscp106_exit_sinkhole ) then 
+				ply.guthscp106_exit_sinkhole:QueueRemove()
+			end
+
+			--  create new sinkhole
 			ply.guthscp106_exit_sinkhole = guthscp106.create_sinkhole( ply:GetPos() )
+
+			--  sink to dimension
 			guthscp106.sink_to( ply, guthscp.configs.guthscp106.dimension_position )
 		elseif ability == guthscp106.ABILITIES.PLACE_SINKHOLE then
+			--  delete previous sinkhole
 			if IsValid( ply.guthscp106_waypoint ) then
 				ply.guthscp106_waypoint:QueueRemove()
 			end
+
+			--  create new sinkhole
 			ply.guthscp106_waypoint = guthscp106.create_sinkhole( ply:GetPos() )
 		elseif ability == guthscp106.ABILITIES.ENTER_SINKHOLE then
 			if not IsValid( ply.guthscp106_waypoint ) then return end
+
+			--  sink to waypoint
 			guthscp106.sink_to( ply, ply.guthscp106_waypoint:GetPos(), true )
 		end
 	end
