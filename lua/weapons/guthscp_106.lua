@@ -45,6 +45,7 @@ SWEP.GuthSCPLVL 		   	= 	0
 function SWEP:PrimaryAttack()
 	if not SERVER then return end
 	
+	--  check target is a living entity
 	local ply = self:GetOwner()
 	local target = guthscp.world.player_trace_attack( ply, config.distance_unit, config.attack_hull_size ).Entity
 	if not IsValid( target ) or not guthscp.world.is_living_entity( target ) then 
@@ -52,7 +53,18 @@ function SWEP:PrimaryAttack()
 		return 
 	end
 
-	guthscp106.sink_to( target, config.dimension_position )
+	--  TODO: in-pocket-dimension condition
+	if false then
+		--  kill in pocket dimension
+		target:Kill()
+	else
+		--  teleport and damage
+		target:SetPos( config.dimension_position )
+		if config.attack_damage > 0.0 then
+			target:TakeDamage( target:GetMaxHealth() * config.attack_damage, ply, self )
+		end
+	end
+
 	self:SetNextPrimaryFire( CurTime() + 1.0 )
 end
 

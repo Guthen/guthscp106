@@ -96,6 +96,16 @@ MODULE.menu = {
 				desc = "Size of tolerance for targeting in units. The higher the number, the easier it is to aim, but the less precise it is",
 				default = 5,
 			},
+			{
+				type = "Number",
+				name = "Attack Damage",
+				id = "attack_damage",
+				desc = "Scale of maximum target's health to apply as damage when SCP-106 sends it to the pocket dimension. Set to 0.0 to disable the damage",
+				default = 0.2,
+				interval = 0.1,
+				min = 0.0,
+				max = 1.0,
+			},
 			"Pass-through",
 			{
 				type = "String[]",
