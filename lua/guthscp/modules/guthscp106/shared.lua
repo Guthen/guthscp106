@@ -20,6 +20,14 @@ if SERVER then
 		guthscp.sound.play( ply, config.sound_idle, config.sound_hear_distance, true, config.sound_idle_volume )
 	end )
 	guthscp106.filter.event_removed:add_listener( "guthscp106:reset", function( ply )
+		--  delete sinkholes
+		if IsValid( ply.guthscp106_exit_sinkhole ) then
+			ply.guthscp106_exit_sinkhole:QueueRemove()
+		end 
+		if IsValid( ply.guthscp106_waypoint ) then
+			ply.guthscp106_waypoint:QueueRemove()
+		end 
+
 		--  collision
 		ply:SetCustomCollisionCheck( false )
 
