@@ -4,7 +4,7 @@ local guthscp106 = guthscp.modules.guthscp106
 local config = guthscp.configs.guthscp106
 
 function ENT:Initialize()
-	self.projected_pos, self.projected_normal = self:TracePosAndNormal()
+	self:FindPosAndNormal()
 	self.anim_time = CurTime()
 
 	--  setup cracks animation
@@ -24,7 +24,7 @@ function ENT:Initialize()
 	self:SetRenderBounds( -bounds, bounds )
 end
 
-function ENT:TracePosAndNormal()
+function ENT:FindPosAndNormal()
 	local pos = self:GetPos()
 	local tr = util.TraceLine( {
 		start = pos + Vector( 0, 0, config.sinkhole_offset_z ),
@@ -32,7 +32,7 @@ function ENT:TracePosAndNormal()
 		mask = MASK_SOLID_BRUSHONLY,
 	} )
 
-	return tr.HitPos, tr.HitNormal
+	self.projected_pos, self.projected_normal = tr.HitPos, tr.HitNormal
 end
 
 function ENT:UpdateAnimation()
