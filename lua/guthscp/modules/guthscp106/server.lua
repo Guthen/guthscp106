@@ -53,26 +53,6 @@ function guthscp106.get_walking_sinkhole( ply )
 	return ply:GetNWEntity( "guthscp106:sinkhole", nil )
 end
 
-function guthscp106.apply_movement_speed_scale( ply, scale, time )
-	--if not guthscp106.is_scp_106( ply ) then return end
-
-	local timer_id = "guthscp106:revert-speed-" .. ply:SteamID64()
-
-	--  apply new speed
-	if not timer.Exists( timer_id ) then
-		ply:SetWalkSpeed( config.walk_speed * scale )
-		ply:SetRunSpeed( config.run_speed * scale )
-	end
-
-	--  revert after time
-	timer.Create( timer_id, time, 1, function()
-		--if not guthscp106.is_scp_106( ply ) then return end
-		
-		ply:SetWalkSpeed( config.walk_speed )
-		ply:SetRunSpeed( config.run_speed )
-	end )
-end
-
 
 hook.Add( "PlayerNoClip", "aaa_guthscp106:noclip", function( ply )
 	if config.noclip and guthscp106.is_scp_106( ply ) then
@@ -87,6 +67,7 @@ hook.Add( "PlayerShouldTakeDamage", "guthscp106:invinsible", function( ply, atta
 end )
 
 hook.Add( "PlayerFootstep", "guthscp106:footstep", function( ply, pos, foot, sound, volume )
+	--  only accepts SCP-106 or players walking on a sinkhole
 	if not guthscp106.is_scp_106( ply ) and not IsValid( guthscp106.get_walking_sinkhole( ply ) ) then return end
 
 	--  check footstep sounds are available
@@ -96,7 +77,7 @@ hook.Add( "PlayerFootstep", "guthscp106:footstep", function( ply, pos, foot, sou
 
 	--  emit sound
 	guthscp.sound.play( ply, sounds[math.random( #sounds )], config.sound_hear_distance, false, config.sound_footstep_volume )
-	
+
 	return true
 end )
 
@@ -111,5 +92,5 @@ hook.Add( "SetupMove", "guthscp106:passthrough-speed", function( ply, mv, cmd )
 	   not ( config.passthrough_living_entities and guthscp.world.is_living_entity( tr.Entity ) ) then return end  --  check living entity
 	
 	--  scale movement speed
-	guthscp106.apply_movement_speed_scale( ply, config.passthrough_speed_factor, config.passthrough_speed_time )
+	guthscp.apply_player_speed_modifier( ply, "guthscp106-passthrough", config.passthrough_speed_factor, config.passthrough_speed_time )
 end )
