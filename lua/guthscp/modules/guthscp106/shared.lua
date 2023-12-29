@@ -106,7 +106,7 @@ if SERVER then
 		elseif ability == guthscp106.ABILITIES.ENTER_DIMENSION then
 			local sinkhole_pos = ply:GetPos() 
 			if not guthscp106.is_valid_sinkhole_position( sinkhole_pos ) then
-				ply:PrintMessage( HUD_PRINTTALK, "Another sinkhole is too close from your position!" )
+				guthscp.player_message( ply, "Another sinkhole is too close from your position!" )
 				return
 			end
 
@@ -123,7 +123,7 @@ if SERVER then
 		elseif ability == guthscp106.ABILITIES.PLACE_SINKHOLE then
 			local sinkhole_pos = ply:GetPos() 
 			if not guthscp106.is_valid_sinkhole_position( sinkhole_pos ) then
-				ply:PrintMessage( HUD_PRINTTALK, "Another sinkhole is too close from your position!" )
+				guthscp.player_message( ply, "Another sinkhole is too close from your position!" )
 				return
 			end
 
