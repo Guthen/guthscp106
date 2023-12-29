@@ -89,10 +89,14 @@ end )
 hook.Add( "PlayerFootstep", "guthscp106:footstep", function( ply, pos, foot, sound, volume )
 	if not guthscp106.is_scp_106( ply ) and not IsValid( guthscp106.get_walking_sinkhole( ply ) ) then return end
 
+	--  check footstep sounds are available
 	local sounds = config.sounds_footstep
 	if #sounds == 0 then return end
+	if config.sound_footstep_volume == 0.0 then return end
 
-	ply:EmitSound( sounds[math.random( #sounds )], nil, nil, volume )
+	--  emit sound
+	guthscp.sound.play( ply, sounds[math.random( #sounds )], config.sound_hear_distance, false, config.sound_footstep_volume )
+	
 	return true
 end )
 

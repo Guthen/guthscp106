@@ -59,11 +59,13 @@ end
 function SWEP:SecondaryAttack()
 	if not SERVER then return end
 	
+	--  check sound availability
+	if #config.sound_laugh == 0 then return end
+	if config.sound_laugh_volume == 0.0 then return end
+
 	--  play sound
 	local ply = self:GetOwner()
-	if #config.sound_laugh > 0 then
-		ply:EmitSound( config.sound_laugh )
-	end
+	guthscp.sound.play( ply, config.sound_laugh, config.sound_hear_distance, false, config.sound_laugh_volume )
 
 	self:SetNextSecondaryFire( CurTime() + 2.0 )
 end

@@ -12,7 +12,7 @@ if SERVER then
 		ply:SetRunSpeed( config.run_speed )
 
 		ply:SetCustomCollisionCheck( true )
-		guthscp.sound.play( ply, config.sound_idle, config.sound_hear_distance, true, 0.5 )
+		guthscp.sound.play( ply, config.sound_idle, config.sound_hear_distance, true, config.sound_idle_volume )
 	end )
 	guthscp106.filter.event_removed:add_listener( "guthscp106:reset", function( ply )
 		ply:SetCustomCollisionCheck( false )
