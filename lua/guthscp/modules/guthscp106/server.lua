@@ -102,3 +102,17 @@ hook.Add( "SetupMove", "guthscp106:passthrough-speed", function( ply, mv, cmd )
 	--  scale movement speed
 	guthscp.apply_player_speed_modifier( ply, "guthscp106-passthrough", config.passthrough_speed_factor, config.passthrough_speed_time )
 end )
+
+timer.Create( "guthscp106:dimension-corrosion", 1.0, 0, function()
+	if config.dimension_corrosion_damage == 0.0 then return end
+
+	--  TODO: find a cleaner and more performant way of iterating through entities in a zone
+	for i, ent in ipairs( ents.GetAll() ) do
+		if not guthscp.world.is_living_entity( ent ) then continue end
+		if guthscp.is_scp( ent ) then continue end
+		if not guthscp106.is_in_pocket_dimension( ent ) then continue end
+
+		local damage = math.max( 1.0, ent:GetMaxHealth() * config.dimension_corrosion_damage )
+		ent:TakeDamage( damage )
+	end
+end )

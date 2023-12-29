@@ -73,13 +73,24 @@ MODULE.menu = {
 					return guthscp.modules.guthscpkeycard == nil
 				end,
 			},
+			"Pocket Dimension",
 			{
 				type = "Vector",
-				name = "Dimension Position",
+				name = "Teleport Position",
 				id = "dimension_position",
 				desc = "Position of the pocket dimension to teleport SCP-106 and his victims",
 				default = vector_origin,
 				show_usepos = true,
+			},
+			{
+				type = "Number",
+				name = "Corrosion Damage",
+				id = "dimension_corrosion_damage",
+				desc = "Scale of target's maximum health to apply as damage in the pocket dimension per second. By default, it is set to 1% of the maximum health. Set to 0.0 to disable the damage",
+				default = 0.01,
+				interval = 0.01,
+				min = 0.0,
+				max = 1.0,
 			},
 			"Weapon",
 			{
