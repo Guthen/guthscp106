@@ -33,10 +33,7 @@ function ENT:QueueRemove()
 end
 
 function ENT:PlaySound()
-	local sounds = config.sounds_corrosion
-	if #sounds == 0 then return end
-
-	guthscp.sound.play( self, sounds[math.random( #sounds )], config.sound_hear_distance, false, config.sound_corrosion_volume )
+	guthscp106.play_corrosion_sound( self )
 end
 
 function ENT:StartTouch( ent )
@@ -65,7 +62,7 @@ function ENT:Touch( ent )
 	end 
 
 	--  sink player
-	guthscp106.sink_to( ent, config.dimension_position )
+	guthscp106.sink_to_dimension( ent )
 end
 
 function ENT:EndTouch( ent )
@@ -75,9 +72,10 @@ function ENT:EndTouch( ent )
 	guthscp106.set_walking_sinkhole( ent, nil )
 end
 
+--  TODO: remove
 function ENT:Use( ent )
 	if not guthscp106.is_scp_106( ent ) then return end
 
 	PrintMessage( HUD_PRINTTALK, "Use: " .. tostring( ent ) )
-	guthscp106.sink_to( ent, config.dimension_position )
+	guthscp106.sink_to_dimension( ent )
 end

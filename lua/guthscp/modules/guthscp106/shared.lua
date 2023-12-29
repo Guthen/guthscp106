@@ -63,6 +63,13 @@ function guthscp106.is_valid_sinkhole_position( pos )
 	return true
 end
 
+function guthscp106.play_corrosion_sound( ent )
+	local sounds = config.sounds_corrosion
+	if #sounds == 0 then return end
+
+	guthscp.sound.play( ent, sounds[math.random( #sounds )], config.sound_hear_distance, false, config.sound_corrosion_volume )
+end
+
 --  pass-through entities
 hook.Add( "ShouldCollide", "guthscp106:nocollide", function( scp106, target )
     if not scp106:IsPlayer() or not guthscp106.is_scp_106( scp106 ) then return end
@@ -94,7 +101,7 @@ if SERVER then
 			if not IsValid( ply.guthscp106_exit_sinkhole ) then return end
 
 			--  sink to exit sinkhole
-			guthscp106.sink_to( ply, ply.guthscp106_exit_sinkhole:GetPos(), true )
+			guthscp106.sink_to( ply, ply.guthscp106_exit_sinkhole:GetPos(), false, true )
 
 			--  delete exit sinkhole
 			local sinkhole = ply.guthscp106_exit_sinkhole
@@ -119,7 +126,7 @@ if SERVER then
 			ply.guthscp106_exit_sinkhole = guthscp106.create_sinkhole( sinkhole_pos )
 
 			--  sink to dimension
-			guthscp106.sink_to( ply, guthscp.configs.guthscp106.dimension_position )
+			guthscp106.sink_to_dimension( ply )
 		elseif ability == guthscp106.ABILITIES.PLACE_SINKHOLE then
 			local sinkhole_pos = ply:GetPos() 
 			if not guthscp106.is_valid_sinkhole_position( sinkhole_pos ) then
@@ -138,7 +145,7 @@ if SERVER then
 			if not IsValid( ply.guthscp106_waypoint ) then return end
 
 			--  sink to waypoint
-			guthscp106.sink_to( ply, ply.guthscp106_waypoint:GetPos(), true )
+			guthscp106.sink_to( ply, ply.guthscp106_waypoint:GetPos(), false, true )
 		end
 	end
 else

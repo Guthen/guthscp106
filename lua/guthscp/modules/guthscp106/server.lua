@@ -1,8 +1,8 @@
 local guthscp106 = guthscp.modules.guthscp106
 local config = guthscp.configs.guthscp106
 
-function guthscp106.sink_to( ent, pos, should_unsink )
-	ent:SetMoveType( MOVETYPE_NONE )
+function guthscp106.sink_to( ent, pos, should_suppress_sound, should_unsink )
+	--[[ ent:SetMoveType( MOVETYPE_NONE )
 	ent:SetPos( ent:GetPos() - Vector( 0, 0, 32 ) )
 	
 	--  TODO: animate
@@ -20,7 +20,7 @@ function guthscp106.sink_to( ent, pos, should_unsink )
 				step = 0
 				ent:SetPos( pos - ent:GetViewOffset() )
 				timer.Create( "guthscp106:unsink-" .. ent:EntIndex(), SINK_TIME / SINK_STEPS, SINK_STEPS, function()
-					ent:SetPos( pos + SINK_OFFSET_BY_STEP * step )
+					ent:SetPos( pos - ent:GetViewOffset() + SINK_OFFSET_BY_STEP * step )
 
 					step = step + 1
 					if step == SINK_STEPS then
@@ -34,7 +34,23 @@ function guthscp106.sink_to( ent, pos, should_unsink )
 		else
 			ent:SetPos( start_pos - SINK_OFFSET_BY_STEP * step )
 		end
-	end )
+	end ) ]]
+	ent:SetPos( pos )
+
+	if not should_suppress_sound then
+		guthscp106.play_corrosion_sound( ent )
+	end
+end
+
+function guthscp106.sink_to_dimension( ent )
+	guthscp106.sink_to( ent, config.dimension_position, true, true )
+
+	if ent:IsPlayer() then
+		local sounds = config.sounds_sink_in_dimension
+		if #sounds == 0 then return end
+		
+		guthscp.sound.play_client( ent, sounds[math.random( #sounds )] )
+	end
 end
 
 function guthscp106.create_sinkhole( pos )

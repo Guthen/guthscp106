@@ -65,7 +65,7 @@ function SWEP:PrimaryAttack()
 		end
 	else
 		--  teleport and damage
-		target:SetPos( config.dimension_position )
+		guthscp106.sink_to_dimension( target )
 		if config.attack_damage > 0.0 then
 			target:TakeDamage( config.attack_damage, ply, self )
 		end
