@@ -339,8 +339,6 @@ MODULE.menu = {
 					"guthen_scp/106/corrosion2.ogg",
 				},
 			},
-			guthscp.config.create_apply_button(),
-			guthscp.config.create_reset_button(),
 		},
 	},
 	--  details
