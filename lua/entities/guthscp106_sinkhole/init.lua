@@ -7,7 +7,9 @@ local guthscp106 = guthscp.modules.guthscp106
 local config = guthscp.configs.guthscp106
 
 function ENT:Initialize()
-	self:PlaySound()
+	timer.Simple( 0.1, function()
+		self:PlaySound()
+	end )
 
 	local size = config.sinkhole_size * config.sinkhole_trigger_size_ratio * 0.5
 	local bounds = Vector( size, size, 1.0 )
@@ -34,7 +36,7 @@ function ENT:PlaySound()
 	local sounds = config.sounds_corrosion
 	if #sounds == 0 then return end
 
-	self:EmitSound( sounds[math.random( #sounds )] )
+	guthscp.sound.play( self, sounds[math.random( #sounds )], config.sound_hear_distance, false, config.sound_corrosion_volume )
 end
 
 function ENT:StartTouch( ent )

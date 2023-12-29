@@ -339,6 +339,16 @@ MODULE.menu = {
 					"guthen_scp/106/corrosion2.ogg",
 				},
 			},
+			{
+				type = "Number",
+				name = "Corrosion Volume",
+				id = "sound_corrosion_volume",
+				desc = "Volume of corrosion sounds, from 0.0 to 1.0. Set to 0.0 to disable corrosion sounds.",
+				default = 0.8,
+				interval = 0.1,
+				min = 0.0,
+				max = 1.0,
+			},
 		},
 	},
 	--  details
