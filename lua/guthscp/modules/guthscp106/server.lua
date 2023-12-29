@@ -82,7 +82,7 @@ hook.Add( "PlayerFootstep", "guthscp106:footstep", function( ply, pos, foot, sou
 end )
 
 hook.Add( "SetupMove", "guthscp106:passthrough-speed", function( ply, mv, cmd )
-	if not config.should_passthrough_change_speed then return end
+	if config.passthrough_speed_factor == 1.0 then return end
 	if not guthscp106.is_scp_106( ply ) then return end
 
 	--  get passing-through entity
