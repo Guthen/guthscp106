@@ -54,14 +54,16 @@ function SWEP:PrimaryAttack()
 	end
 
 	--  TODO: in-pocket-dimension condition
-	if false then
-		--  kill in pocket dimension
-		target:Kill()
+	if guthscp106.is_in_pocket_dimension( target ) then
+		--  deal different damage in pocket dimension
+		if config.attack_damage_in_dimension > 0.0 then
+			target:TakeDamage( config.attack_damage_in_dimension, ply, self )
+		end
 	else
 		--  teleport and damage
 		target:SetPos( config.dimension_position )
 		if config.attack_damage > 0.0 then
-			target:TakeDamage( target:GetMaxHealth() * config.attack_damage, ply, self )
+			target:TakeDamage( config.attack_damage, ply, self )
 		end
 	end
 

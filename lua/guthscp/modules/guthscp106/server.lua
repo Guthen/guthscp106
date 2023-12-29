@@ -53,6 +53,14 @@ function guthscp106.get_walking_sinkhole( ply )
 	return ply:GetNWEntity( "guthscp106:sinkhole", nil )
 end
 
+function guthscp106.is_in_pocket_dimension( ent )
+	--  TODO: create a tool to set up the dimension
+	local start, endpos = Vector( 4337, 5460, 1717 ), Vector( 1490, 3761, 500 )
+	local pos = ent:GetPos()
+
+	return pos:WithinAABox( start, endpos )
+end
+
 
 hook.Add( "PlayerNoClip", "aaa_guthscp106:noclip", function( ply )
 	if config.noclip and guthscp106.is_scp_106( ply ) then
