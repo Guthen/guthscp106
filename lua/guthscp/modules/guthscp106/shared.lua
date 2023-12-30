@@ -64,10 +64,7 @@ function guthscp106.is_valid_sinkhole_position( pos )
 end
 
 function guthscp106.play_corrosion_sound( ent )
-	local sounds = config.sounds_corrosion
-	if #sounds == 0 then return end
-
-	guthscp.sound.play( ent, sounds[math.random( #sounds )], config.sound_hear_distance, false, config.sound_corrosion_volume )
+	guthscp.sound.play( ent, config.sounds_corrosion, config.sound_hear_distance, false, config.sound_corrosion_volume )
 end
 
 --  pass-through entities

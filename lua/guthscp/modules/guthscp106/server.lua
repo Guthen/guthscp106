@@ -46,10 +46,7 @@ function guthscp106.sink_to_dimension( ent )
 	guthscp106.sink_to( ent, config.dimension_position, true, true )
 
 	if ent:IsPlayer() then
-		local sounds = config.sounds_sink_in_dimension
-		if #sounds == 0 then return end
-		
-		guthscp.sound.play_client( ent, sounds[math.random( #sounds )] )
+		guthscp.sound.play_client( ent, config.sounds_sink_in_dimension )
 	end
 end
 
@@ -97,12 +94,10 @@ hook.Add( "PlayerFootstep", "guthscp106:footstep", function( ply, pos, foot, sou
 	   not guthscp106.is_in_pocket_dimension( ply ) then return end
 
 	--  check footstep sounds are available
-	local sounds = config.sounds_footstep
-	if #sounds == 0 then return end
 	if config.sound_footstep_volume == 0.0 then return end
 
 	--  emit sound
-	guthscp.sound.play( ply, sounds[math.random( #sounds )], config.sound_hear_distance, false, config.sound_footstep_volume )
+	guthscp.sound.play( ply, config.sounds_footstep, config.sound_hear_distance, false, config.sound_footstep_volume )
 
 	return true
 end )
@@ -121,10 +116,7 @@ hook.Add( "SetupMove", "guthscp106:passthrough-speed", function( ply, mv, cmd )
 
 	--  play sound if start passing-through
 	if not guthscp.has_player_speed_modifier( ply, modifier_id ) then
-		local sounds = config.sounds_passthrough
-		if #sounds == 0 then return end
-
-		guthscp.sound.play( tr.Entity, sounds[math.random( #sounds )], config.sound_hear_distance, false, config.sound_corrosion_volume )
+		guthscp.sound.play( tr.Entity, config.sounds_passthrough, config.sound_hear_distance, false, config.sound_corrosion_volume )
 	end
 	
 	--  scale movement speed
