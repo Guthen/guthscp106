@@ -50,9 +50,10 @@ function guthscp106.sink_to_dimension( ent )
 	end
 end
 
-function guthscp106.create_sinkhole( pos )
+function guthscp106.create_sinkhole( pos, owner )
 	local hole = ents.Create( "guthscp106_sinkhole" )
 	hole:SetPos( pos )
+	hole:SetOwner( owner )
 	hole:Spawn()
 
 	return hole

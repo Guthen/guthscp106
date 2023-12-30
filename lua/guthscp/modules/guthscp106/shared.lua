@@ -120,7 +120,7 @@ if SERVER then
 			end
 
 			--  create new sinkhole
-			ply.guthscp106_exit_sinkhole = guthscp106.create_sinkhole( sinkhole_pos )
+			ply.guthscp106_exit_sinkhole = guthscp106.create_sinkhole( sinkhole_pos, ply )
 
 			--  sink to dimension
 			guthscp106.sink_to_dimension( ply )
@@ -137,7 +137,7 @@ if SERVER then
 			end
 
 			--  create new sinkhole
-			ply.guthscp106_waypoint = guthscp106.create_sinkhole( sinkhole_pos )
+			ply.guthscp106_waypoint = guthscp106.create_sinkhole( sinkhole_pos, ply )
 		elseif ability == guthscp106.ABILITIES.ENTER_SINKHOLE then
 			if not IsValid( ply.guthscp106_waypoint ) then return end
 

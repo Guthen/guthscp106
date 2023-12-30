@@ -251,6 +251,22 @@ MODULE.menu = {
 					min = 0,
 				},
 				{
+					type = "Number",
+					name = "Signal Distance",
+					id = "sinkhole_signal_distance",
+					desc = "In Hammer units, how much distance from players can a sinkhole detect them? Set to 0 to disable",
+					default = 256,
+					min = 0,
+				},
+				{
+					type = "Number",
+					name = "Signal Update Time",
+					id = "sinkhole_signal_update_time",
+					desc = "In seconds, the time for each signal update. An update consists of getting players nearby a sinkhole and therefore alert SCP-106",
+					default = 1.0,
+					min = 0.1,
+				},
+				{
 					type = "Bool",
 					name = "Can Sink",
 					id = "sinkhole_can_sink",
