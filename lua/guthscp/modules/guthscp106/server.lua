@@ -117,8 +117,18 @@ hook.Add( "SetupMove", "guthscp106:passthrough-speed", function( ply, mv, cmd )
 	if not config.passthrough_entity_classes[tr.Entity:GetClass()] and  --  check not a traversable class
 	   not ( config.passthrough_living_entities and guthscp.world.is_living_entity( tr.Entity ) ) then return end  --  check living entity
 	
+	local modifier_id = "guthscp106-passthrough"
+
+	--  play sound if start passing-through
+	if not guthscp.has_player_speed_modifier( ply, modifier_id ) then
+		local sounds = config.sounds_passthrough
+		if #sounds == 0 then return end
+
+		guthscp.sound.play( tr.Entity, sounds[math.random( #sounds )], config.sound_hear_distance, false, config.sound_corrosion_volume )
+	end
+	
 	--  scale movement speed
-	guthscp.apply_player_speed_modifier( ply, "guthscp106-passthrough", config.passthrough_speed_factor, config.passthrough_speed_time )
+	guthscp.apply_player_speed_modifier( ply, modifier_id, config.passthrough_speed_factor, config.passthrough_speed_time )
 end )
 
 timer.Create( "guthscp106:dimension-corrosion", 1.0, 0, function()

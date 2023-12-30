@@ -350,10 +350,21 @@ MODULE.menu = {
 					},
 				},
 				{
+					type = "String[]",
+					name = "Pass-through",
+					id = "sounds_passthrough",
+					desc = "Sounds randomly played when SCP-106 pass-through something or someone",
+					default = {
+						"guthen_scp/106/wall_decay1.ogg",
+						"guthen_scp/106/wall_decay2.ogg",
+						"guthen_scp/106/wall_decay3.ogg",
+					},
+				},
+				{
 					type = "Number",
 					name = "Corrosion Volume",
 					id = "sound_corrosion_volume",
-					desc = "Volume of corrosion sounds, from 0.0 to 1.0. Set to 0.0 to disable corrosion sounds",
+					desc = "Volume of corrosion and pass-through sounds, from 0.0 to 1.0. Set to 0.0 to disable corrosion sounds",
 					default = 0.8,
 					interval = 0.1,
 					min = 0.0,
