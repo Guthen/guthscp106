@@ -68,11 +68,13 @@ function guthscp106.get_walking_sinkhole( ply )
 end
 
 function guthscp106.is_in_pocket_dimension( ent )
-	--  TODO: create a tool to set up the dimension
-	local start, endpos = Vector( 4337, 5460, 1717 ), Vector( 1490, 3761, 500 )
-	local pos = ent:GetPos()
+	return guthscp106.pocket_dimension_zone:is_in( ent )
+end
 
-	return pos:WithinAABox( start, endpos )
+function guthscp106.is_in_containment_cell( ent )
+	return guthscp106.containment_cell_zone:is_in( ent )
+end
+
 function guthscp106.apply_corrosion_damage( ent )
 	local damage = math.max( 1.0, ent:GetMaxHealth() * config.dimension_corrosion_damage )
 	ent:TakeDamage( damage )

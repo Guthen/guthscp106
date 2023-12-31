@@ -447,6 +447,10 @@ function MODULE:init()
 
 	--  create filter
 	self.passthrough_filter = guthscp.map_entities_filter:new( "guthscp106_passthrough", "GuthSCP-106 Pass-through" )
+
+	--  create zones
+	self.pocket_dimension_zone = guthscp.zone:new( "guthscp106_pocket_dimension", "GuthSCP-106 Pocket Dimension" )
+	self.containment_cell_zone = guthscp.zone:new( "guthscp106_containment_cell", "GuthSCP-106 Containment Cell" )
 end
 
 guthscp.module.hot_reload( "guthscp106" )
