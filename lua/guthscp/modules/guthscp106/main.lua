@@ -101,6 +101,13 @@ MODULE.menu = {
 					desc = "If checked, the dimension can corrodes SCPs Teams",
 					default = false,
 				},
+				{
+					type = "Bool",
+					name = "Can Corrode NPCs",
+					id = "dimension_can_corrode_npcs",
+					desc = "If checked, the dimension can corrodes NPCs and NextBots",
+					default = false,
+				},
 			},
 			"Weapon",
 			{

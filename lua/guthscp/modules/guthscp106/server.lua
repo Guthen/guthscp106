@@ -73,6 +73,9 @@ function guthscp106.is_in_pocket_dimension( ent )
 	local pos = ent:GetPos()
 
 	return pos:WithinAABox( start, endpos )
+function guthscp106.apply_corrosion_damage( ent )
+	local damage = math.max( 1.0, ent:GetMaxHealth() * config.dimension_corrosion_damage )
+	ent:TakeDamage( damage )
 end
 
 
@@ -124,13 +127,22 @@ end )
 timer.Create( "guthscp106:dimension-corrosion", 1.0, 0, function()
 	if config.dimension_corrosion_damage == 0.0 then return end
 
-	--  TODO: find a cleaner and more performant way of iterating through entities in a zone
-	for i, ent in ipairs( ents.GetAll() ) do
-		if not guthscp.world.is_living_entity( ent ) then continue end
-		if not config.dimension_can_corrode_scps and guthscp.is_scp( ent ) then continue end
-		if not guthscp106.is_in_pocket_dimension( ent ) then continue end
+	--  TODO: add possibility to link a filter to a zone
+	
+	--  corrode players
+	for i, ply in ipairs( player.GetAll() ) do
+		if not guthscp106.is_in_pocket_dimension( ply ) then continue end
+		if not config.dimension_can_corrode_scps and guthscp.is_scp( ply ) then continue end
 
-		local damage = math.max( 1.0, ent:GetMaxHealth() * config.dimension_corrosion_damage )
-		ent:TakeDamage( damage )
+		guthscp106.apply_corrosion_damage( ply )
+	end
+
+	--  corrode NPCs
+	if config.dimension_can_corrode_npcs then
+		for i, npc in ipairs( guthscp.get_npcs() ) do
+			if not guthscp106.is_in_pocket_dimension( npc ) then continue end
+	
+			guthscp106.apply_corrosion_damage( npc )
+		end
 	end
 end )
