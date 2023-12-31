@@ -74,10 +74,6 @@ end
 
 function SWEP:SecondaryAttack()
 	if not SERVER then return end
-	
-	--  check sound availability
-	if #config.sound_laugh == 0 then return end
-	if config.sound_laugh_volume == 0.0 then return end
 
 	--  play sound
 	local ply = self:GetOwner()

@@ -94,9 +94,6 @@ hook.Add( "PlayerFootstep", "guthscp106:footstep", function( ply, pos, foot, sou
 	   not IsValid( guthscp106.get_walking_sinkhole( ply ) ) and 
 	   not guthscp106.is_in_pocket_dimension( ply ) then return end
 
-	--  check footstep sounds are available
-	if config.sound_footstep_volume == 0.0 then return end
-
 	--  emit sound
 	guthscp.sound.play( ply, config.sounds_footstep, config.sound_hear_distance, false, config.sound_footstep_volume )
 
