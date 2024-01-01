@@ -11,17 +11,21 @@ local MODULE = {
 	requires = {
 		["shared.lua"] = guthscp.REALMS.SHARED,
 		["server.lua"] = guthscp.REALMS.SERVER,
-		--["client.lua"] = guthscp.REALMS.CLIENT,
+		["client.lua"] = guthscp.REALMS.CLIENT,
 	},
 }
 
 MODULE.ABILITIES = {
-	ENTER_DIMENSION = 0,
-	EXIT_DIMENSION = 1,
-	PLACE_SINKHOLE = 2,
-	ENTER_SINKHOLE = 3,
+	SINKHOLE_A = 0,
+	SINKHOLE_B = 1,
+	ENTER_DIMENSION = 2,
 }
-MODULE._ability_ubits = guthscp.helpers.number_of_ubits( MODULE.ABILITIES.ENTER_SINKHOLE )
+MODULE._ability_ubits = guthscp.helpers.number_of_ubits( MODULE.ABILITIES.ENTER_DIMENSION )
+
+MODULE.SINKHOLE_SLOTS = {
+	A = "sinkhole-a",
+	B = "sinkhole-b",
+}
 
 MODULE.menu = {
 	--  config
@@ -61,7 +65,7 @@ MODULE.menu = {
 					type = "Bool",
 					name = "Auto-Disable Abilities",
 					id = "auto_disable_abilities",
-					desc = "If checked, SCP-106 can't use his abilities and noclip when he is contained. He is consider contained when he is located inside the 'GuthSCP-106 Containment Cell' zone, which you need to configure using the 'Zone Configurator' tool.",
+					desc = "If checked, SCP-106 can't use his abilities and noclip while he is contained. He is considered to be contained when he is inside the 'GuthSCP-106 Containment Cell' zone, which you need to configure using the 'Zone Configurator' tool.",
 					default = true,
 				},
 				{
@@ -79,6 +83,22 @@ MODULE.menu = {
 					is_disabled = function( self, numwang )
 						return guthscp.modules.guthscpkeycard == nil
 					end,
+				},
+				{
+					type = "Number",
+					name = "Sink Time",
+					id = "sink_time",
+					desc = "In seconds, how much time it takes for someone (both SCP-106 and victims) to sink? It's also the amount of time for SCP-106 to unsink",
+					default = 1.5,
+					min = 0.1,
+				},
+				{
+					type = "Number",
+					name = "Sink Steps",
+					id = "sink_steps",
+					desc = "How smooth should the sink animation be? A higher number means a smoother look. Set to 0 to disable the sink/unsink animation",
+					default = 50,
+					min = 0,
 				},
 			},
 			"Pocket Dimension",
@@ -261,7 +281,7 @@ MODULE.menu = {
 					name = "Placement Distance",
 					id = "sinkhole_placement_distance",
 					desc = "In Hammer units, how much distance from another sinkhole is required to place one? Set to 0 to disable",
-					default = 256,
+					default = 96,
 					min = 0,
 				},
 				{

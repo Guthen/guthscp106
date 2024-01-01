@@ -56,6 +56,7 @@ function SWEP:PrimaryAttack()
 
 	--  depending on config, avoid attacking SCPs Teams
 	if not config.dimension_can_attack_scps and guthscp.is_scp( target ) then return end
+	if guthscp106.is_sinking( target ) then return end
 
 	--  TODO: in-pocket-dimension condition
 	if guthscp106.is_in_pocket_dimension( target ) then
@@ -66,6 +67,8 @@ function SWEP:PrimaryAttack()
 	else
 		--  teleport and damage
 		guthscp106.sink_to_dimension( target )
+		guthscp106.play_corrosion_sound( self )
+
 		if config.attack_damage > 0.0 then
 			target:TakeDamage( config.attack_damage, ply, self )
 		end
@@ -90,69 +93,72 @@ function SWEP:Deploy()
 	self.GuthSCPLVL = config.keycard_level
 end
 
-local canReload = true
+local can_reload = true
 function SWEP:Reload()
 	if not CLIENT then return end
 
-	local buttons = {
-		{
-			text = "Enter Pocket Dimension",
+	local ply = LocalPlayer()
+	if guthscp106.is_sinking( ply ) then return end
+
+	--  handle reload cooldown
+	if not can_reload then return end
+	can_reload = false
+	timer.Simple( .5, function() can_reload = true end )
+	
+	--  setup vars
+	local is_contained = config.auto_disable_abilities and guthscp106.is_in_containment_cell( ply )
+	local is_in_pocket_dimension = guthscp106.is_in_pocket_dimension( ply )
+
+	local function create_sinkhole_option( slot )
+		local name = slot == guthscp106.SINKHOLE_SLOTS.A and "A" or "B"
+		return {
+			init = function( button )
+				local sinkhole = guthscp106.get_sinkhole( ply, slot )
+
+				if is_in_pocket_dimension then
+					button:SetText( "Go To Sinkhole " .. name )
+					button:SetEnabled( IsValid( sinkhole ) )
+				else
+					button:SetText( "Place Sinkhole " .. name )
+
+					if IsValid( sinkhole ) then
+						button:SetColor( Color( 0, 200, 0 ) )
+					else
+						button:SetColor( Color( 200, 0, 0 ) )
+					end
+				end
+
+				if is_contained then
+					button:SetEnabled( false )
+				end
+			end,
 			action = function()
-				guthscp106.use_ability( guthscp106.ABILITIES.ENTER_DIMENSION )
-			end
-		},
-		{
-			text = "Exit Pocket Dimension",
-			action = function()
-				guthscp106.use_ability( guthscp106.ABILITIES.EXIT_DIMENSION )
-			end
-		},
-		{
-			text = "Place Waypoint",
-			action = function()
-				guthscp106.use_ability( guthscp106.ABILITIES.PLACE_SINKHOLE )
-			end
-		},
-		{
-			text = "Go to Waypoint",
-			action = function()
-				guthscp106.use_ability( guthscp106.ABILITIES.ENTER_SINKHOLE )
-			end
-		},
-	}
-
-	if not canReload then return end
-	canReload = false
-	timer.Simple( .5, function() canReload = true end )
-
-	local w = ScrW() * .2
-
-	--  init frame
-	local frame = vgui.Create( "DFrame" )
-	frame:SetWide( w )
-	frame:SetTitle( "Pocket Dimension" )
-	frame:SetDraggable( false )
-	frame:MakePopup()
-
-	--  actions group
-	local label = frame:Add( "DLabel" )
-	label:Dock( TOP )
-	label:DockMargin( 0, 0, 0, 2 )
-	label:SetText( "Actions" )
-	label:SizeToContents()
-
-	for i, v in ipairs( buttons ) do
-		local button = frame:Add( "DButton" )
-		button:Dock( TOP )
-		button:DockMargin( 0, 0, 0, 2 )
-		button:SetText( v.text )
-		button.DoClick = v.action
+				guthscp106.use_ability( guthscp106.ABILITIES["SINKHOLE_" .. name] )
+			end,
+		}
 	end
 
-	--  size frame to children and center
-	frame:InvalidateLayout( true )
-	frame:SizeToChildren( false, true )
-	frame:Center()
+	--  setup menu options
+	local options = {
+		create_sinkhole_option( guthscp106.SINKHOLE_SLOTS.A ),
+		{
+			init = function( button )
+				button:SetText( "Enter Pocket Dimension" )
+				button:SetEnabled( not is_in_pocket_dimension )
+
+				if is_contained then
+					button:SetEnabled( false )
+				end
+			end,
+			action = function()
+				guthscp106.use_ability( guthscp106.ABILITIES.ENTER_DIMENSION )
+			end,
+		},
+		create_sinkhole_option( guthscp106.SINKHOLE_SLOTS.B ),
+	}
+
+	--  show menu
+	guthscp106.open_custom_menu( "Abilities", options, IN_RELOAD )
 end
 
 --  add to spawnmenu

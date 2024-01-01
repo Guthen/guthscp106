@@ -1,53 +1,103 @@
 local guthscp106 = guthscp.modules.guthscp106
 local config = guthscp.configs.guthscp106
 
-function guthscp106.sink_to( ent, pos, should_suppress_sound, should_unsink )
-	--[[ ent:SetMoveType( MOVETYPE_NONE )
-	ent:SetPos( ent:GetPos() - Vector( 0, 0, 32 ) )
+function guthscp106.sink_to( ent, pos, should_suppress_sound, should_unsink, on_finish )
+	--  sink animation
+	local steps = config.sink_steps
+	if steps > 0 then
+		--  mark as sinking
+		guthscp106.set_sinking( ent, true )
+		
+		--  set fly movement so it disables movement and looks better with the 3rd-person animation
+		if ent:IsPlayer() then
+			ent:SetMoveType( MOVETYPE_FLY )
+		end
 	
-	--  TODO: animate
-	local SINK_TIME = 2.0
-	local SINK_STEPS = 20
-	local SINK_OFFSET_BY_STEP = ent:GetViewOffset() / SINK_STEPS
-	local start_pos = ent:GetPos()
-	--print( SINK_TIME / SINK_STEPS, SINK_OFFSET_BY_STEP )
+		--  setup animation variables
+		local start_pos = ent:GetPos()
+		local view_offset = ent:EyePos() - ent:GetPos() 
+		local offset_by_step = view_offset / steps
+		local tick_time = config.sink_time / steps
 
-	local step = 0
-	timer.Create( "guthscp106:sink-" .. ent:EntIndex(), SINK_TIME / SINK_STEPS, SINK_STEPS, function()
-		step = step + 1
-		if step == SINK_STEPS then
-			if should_unsink then
-				step = 0
-				ent:SetPos( pos - ent:GetViewOffset() )
-				timer.Create( "guthscp106:unsink-" .. ent:EntIndex(), SINK_TIME / SINK_STEPS, SINK_STEPS, function()
-					ent:SetPos( pos - ent:GetViewOffset() + SINK_OFFSET_BY_STEP * step )
-
-					step = step + 1
-					if step == SINK_STEPS then
+		--  start animation
+		local step = 0
+		timer.Create( "guthscp106:sink-" .. ent:EntIndex(), tick_time, steps, function()
+			step = step + 1
+			if step == steps then
+				--  unsink animation
+				if should_unsink then
+					step = 0
+	
+					start_pos = pos - view_offset + vector_up
+					ent:SetPos( start_pos )
+					
+					timer.Create( "guthscp106:unsink-" .. ent:EntIndex(), tick_time, steps, function()
+						ent:SetPos( start_pos + offset_by_step * ( 1 + step ) )
+	
+						step = step + 1
+						if step == steps then
+							if ent:IsPlayer() then
+								ent:SetMoveType( MOVETYPE_WALK )
+							end
+	
+							--  remove sinking mark
+							guthscp106.set_sinking( ent, false )
+	
+							--  call callback
+							if on_finish then
+								on_finish()
+							end
+						end
+					end )
+				else
+					ent:SetPos( pos )
+					if ent:IsPlayer() then
 						ent:SetMoveType( MOVETYPE_WALK )
 					end
-				end )
+	
+					--  remove sinking mark
+					guthscp106.set_sinking( ent, false )
+	
+					--  call callback
+					if on_finish then
+						on_finish()
+					end
+				end
 			else
-				ent:SetPos( pos )
-				ent:SetMoveType( MOVETYPE_WALK )
+				ent:SetPos( start_pos - offset_by_step * ( 1 + step ) )
 			end
-		else
-			ent:SetPos( start_pos - SINK_OFFSET_BY_STEP * step )
-		end
-	end ) ]]
-	ent:SetPos( pos )
+		end )
+	else
+		--  teleport directly to position
+		ent:SetPos( pos )
 
+		--  reset movement type
+		if ent:IsPlayer() then
+			ent:SetMoveType( MOVETYPE_WALK )
+		end
+	end
+
+
+	--  play sinking sound
 	if not should_suppress_sound then
 		guthscp106.play_corrosion_sound( ent )
 	end
 end
 
 function guthscp106.sink_to_dimension( ent )
-	guthscp106.sink_to( ent, config.dimension_position, true, true )
+	guthscp106.sink_to( ent, config.dimension_position, false, false, function()
+		if ent:IsPlayer() then
+			guthscp.sound.play_client( ent, config.sounds_sink_in_dimension )
+		end
+	end )
+end
 
-	if ent:IsPlayer() then
-		guthscp.sound.play_client( ent, config.sounds_sink_in_dimension )
-	end
+function guthscp106.set_sinking( ent, value )
+	ent:SetNWBool( "guthscp106:is_sinking", value )
+end
+
+function guthscp106.set_sinkhole( ply, sinkhole, slot )
+	ply:SetNWEntity( "guthscp106:" .. slot, sinkhole )
 end
 
 function guthscp106.create_sinkhole( pos, owner )

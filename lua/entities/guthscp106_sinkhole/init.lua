@@ -3,6 +3,8 @@ AddCSLuaFile( "shared.lua" )
 
 include( "shared.lua" )
 
+util.AddNetworkString( "guthscp106:sinkhole" )
+
 local guthscp106 = guthscp.modules.guthscp106
 local config = guthscp.configs.guthscp106
 
@@ -31,6 +33,7 @@ function ENT:Think()
 
 		for i, ent in ipairs( ents.FindInSphere( self:GetPos(), config.sinkhole_signal_distance ) ) do
 			if not ent:IsPlayer() then continue end
+			if guthscp106.is_sinking( ent ) then continue end
 			if guthscp.is_scp( ent ) then continue end
 
 			count = count + 1
@@ -62,18 +65,19 @@ end
 
 function ENT:StartTouch( ent )
 	if self:IsQueueRemoved() then return end
+
 	if not ent:IsPlayer() or guthscp106.is_scp_106( ent ) then return end
 
-	--PrintMessage( HUD_PRINTTALK, "StartTouch: " .. tostring( ent ) )
 	guthscp106.set_walking_sinkhole( ent, self )
 end
 
 function ENT:Touch( ent )
-	if not config.sinkhole_can_sink then return end
-
 	if self:IsQueueRemoved() then return end
+
+	--  check entity is targetable
 	if not guthscp.world.is_living_entity( ent ) then return end
 	if guthscp106.is_scp_106( ent ) then return end
+	if guthscp106.is_sinking( ent ) then return end
 
 	--  check sink distance
 	local dist = config.sinkhole_size * config.sinkhole_distance_ratio * 0.5
@@ -85,8 +89,12 @@ function ENT:Touch( ent )
 		return 
 	end 
 
+	--  check config allow sinking entities
+	if not config.sinkhole_can_sink then return end
+
 	--  sink player
 	guthscp106.sink_to_dimension( ent )
+	guthscp106.play_corrosion_sound( self )
 
 	local owner = self:GetOwner()
 	if IsValid( owner ) then
@@ -101,10 +109,63 @@ function ENT:EndTouch( ent )
 	guthscp106.set_walking_sinkhole( ent, nil )
 end
 
---  TODO: remove
+local authorized_players = {}
 function ENT:Use( ent )
+	if self:IsQueueRemoved() then return end
+	if self.IsUseDisabled then return end
+	
 	if not guthscp106.is_scp_106( ent ) then return end
+	if guthscp106.is_sinking( ent ) then return end
 
-	PrintMessage( HUD_PRINTTALK, "Use: " .. tostring( ent ) )
-	guthscp106.sink_to_dimension( ent )
+	net.Start( "guthscp106:sinkhole" )
+		net.WriteEntity( self )
+	net.Send( ent )
+
+	authorized_players[ent] = {
+		time = CurTime(),
+		sinkhole = self,
+	}
 end
+
+local MAX_AUTHORIZATION_TIME = 30  	--  30 seconds for using the sinkhole, should be more than enough
+local MAX_DISTANCE_SQR = 128 * 128  --  128 hammer units of maximum distance
+net.Receive( "guthscp106:sinkhole", function( len, ply )
+	--  securiy checks
+	local data = authorized_players[ply]
+	if not data then
+		guthscp106:warning( "%s (%s) tried to use a sinkhole while not being authorized!", ply:GetName(), ply:SteamID() )
+		return
+	end
+	if CurTime() - data.time > MAX_AUTHORIZATION_TIME then
+		guthscp106:warning( "%s (%s) tried to use a sinkhole while being out of authorization time!", ply:GetName(), ply:SteamID() )
+		return	
+	end
+	if not IsValid( data.sinkhole ) then
+		guthscp106:warning( "%s (%s) tried to use an invalid sinkhole!", ply:GetName(), ply:SteamID() )
+		return	
+	end
+	if data.sinkhole:GetPos():DistToSqr( ply:GetPos() ) > MAX_DISTANCE_SQR then
+		guthscp106:warning( "%s (%s) tried to use a sinkhole while being too far!", ply:GetName(), ply:SteamID() )
+		return	
+	end
+
+	--  sink to dimension
+	local is_going_to_dimension = net.ReadBool()
+	if is_going_to_dimension then
+		guthscp106.sink_to_dimension( ply )
+	--  sink to the other sinkhole
+	else
+		local sinkhole_a = guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.A )
+		local sinkhole_b = guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.B )
+		local target_sinkhole = data.sinkhole == sinkhole_a and sinkhole_b or sinkhole_a
+		if not IsValid( target_sinkhole ) then
+			guthscp106:warning( "%s (%s) tried to use a sinkhole to sink to an invalid one!", ply:GetName(), ply:SteamID() )
+			return
+		end
+
+		guthscp106.sink_to( ply, target_sinkhole:GetPos(), false, true )
+	end
+
+	--  reset authorization
+	authorized_players[ply] = nil
+end )

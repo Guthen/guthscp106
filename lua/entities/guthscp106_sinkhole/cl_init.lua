@@ -75,3 +75,40 @@ function ENT:Draw()
 	render.SetMaterial( material_corrosion )
 	render.DrawQuadEasy( pos, normal, self.corrosion_size * size, self.corrosion_size * size, color_white, self.corrosion_angle )
 end
+
+net.Receive( "guthscp106:sinkhole", function()
+	local ply = LocalPlayer()
+	local sinkhole = net.ReadEntity()
+
+	--  setup menu options
+	local options = {
+		{
+			init = function( button )
+				local sinkhole_a = guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.A )
+				local sinkhole_b = guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.B )
+				local target_sinkhole = sinkhole == sinkhole_a and sinkhole_b or sinkhole_a
+
+				button:SetText( "Go To Sinkhole " .. ( sinkhole == sinkhole_a and "B" or "A" ) )
+				button:SetEnabled( IsValid( target_sinkhole ) )
+			end,
+			action = function()
+				net.Start( "guthscp106:sinkhole" )
+					net.WriteBool( false )
+				net.SendToServer()
+			end,
+		},
+		{
+			init = function( button )
+				button:SetText( "Enter Pocket Dimension" )
+			end,
+			action = function()
+				net.Start( "guthscp106:sinkhole" )
+					net.WriteBool( true )
+				net.SendToServer()
+			end,
+		},
+	}
+
+	--  show menu
+	guthscp106.open_custom_menu( "Sinkhole", options, IN_USE )
+end )

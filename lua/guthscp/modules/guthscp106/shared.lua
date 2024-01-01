@@ -50,17 +50,31 @@ function guthscp106.is_scp_106( ply )
 end
 
 function guthscp106.is_valid_sinkhole_position( pos )
+	--  TODO: export translations in the config
+	--  check it's grounded
+	if not guthscp.world.is_ground( pos ) then
+		return false, "You must be on ground to place a sinkhole!"
+	end
+
 	--  check distance from others sinkholes
 	local dist_sqr = config.sinkhole_placement_distance * config.sinkhole_placement_distance
 	if dist_sqr > 0.0 then
 		for i, sinkhole in ipairs( ents.FindByClass( "guthscp106_sinkhole" ) ) do
 			if pos:DistToSqr( sinkhole:GetPos() ) <= dist_sqr then
-				return false
+				return false, "Another sinkhole is too close from your position!"
 			end
 		end
 	end
 
 	return true
+end
+
+function guthscp106.is_sinking( ply )
+	return ply:GetNWBool( "guthscp106:is_sinking", false )
+end
+
+function guthscp106.get_sinkhole( ply, slot )
+	return ply:GetNWEntity( "guthscp106:" .. slot, NULL )
 end
 
 function guthscp106.get_walking_sinkhole( ply )
@@ -102,61 +116,85 @@ if SERVER then
 		guthscp106.use_ability( ply, ability )
 	end )
 
+	function guthscp106.use_sinkhole_ability( ply, slot )
+		local last_sinkhole = guthscp106.get_sinkhole( ply, slot )
+
+		if guthscp106.is_in_pocket_dimension( ply ) then
+			if not IsValid( last_sinkhole ) then return end
+			
+			guthscp106.sink_to( ply, last_sinkhole:GetPos(), false, true )
+			return
+		end
+
+		local sinkhole_pos = ply:GetPos() 
+		local can_place, reason = guthscp106.is_valid_sinkhole_position( sinkhole_pos )
+		if not can_place then
+			guthscp.player_message( ply, reason )
+			return
+		end
+
+		--  delete previous sinkhole
+		if IsValid( last_sinkhole ) then 
+			last_sinkhole:QueueRemove()
+		end
+
+		--  create new sinkhole
+		guthscp106.set_sinkhole( ply, guthscp106.create_sinkhole( sinkhole_pos, ply ), slot )
+	end
+
+	local abilities = {
+		[guthscp106.ABILITIES.SINKHOLE_A] = function( ply )
+			guthscp106.use_sinkhole_ability( ply, guthscp106.SINKHOLE_SLOTS.A )
+		end,
+		[guthscp106.ABILITIES.SINKHOLE_B] = function( ply )
+			guthscp106.use_sinkhole_ability( ply, guthscp106.SINKHOLE_SLOTS.B )
+		end,
+		[guthscp106.ABILITIES.ENTER_DIMENSION] = function( ply )
+			if guthscp106.is_in_pocket_dimension( ply ) then return end
+
+			--  direct sink to dimension if noclipping
+			if ply:GetMoveType() == MOVETYPE_NOCLIP then
+				guthscp106.sink_to_dimension( ply )
+				return
+			end
+
+			--  check sinkhole placement
+			local sinkhole_pos = ply:GetPos() 
+			local can_place, reason = guthscp106.is_valid_sinkhole_position( sinkhole_pos )
+			if not can_place then
+				guthscp.player_message( ply, reason )
+				return
+			end
+
+			--  lock SCP-106 while the sinkhole is spawning 
+			ply:SetMoveType( MOVETYPE_NONE )
+
+			--  spawn sinkhole
+			local sinkhole = guthscp106.create_sinkhole( sinkhole_pos )
+			sinkhole.IsUseDisabled = true
+			
+			--  sink SCP-106 after some time
+			timer.Simple( config.sinkhole_anim_spawn_time * 0.5, function()
+				if not IsValid( sinkhole ) or not IsValid( ply ) then return end
+
+				guthscp106.sink_to_dimension( ply )
+
+				--  auto-destroy after some time
+				timer.Simple( config.sinkhole_anim_spawn_time, function()
+					if not IsValid( sinkhole ) then return end
+
+					sinkhole:QueueRemove()
+				end )
+			end )
+		end,
+	}
+
 	function guthscp106.use_ability( ply, ability )
 		if not guthscp106.is_scp_106( ply ) then return end
 		if config.auto_disable_abilities and guthscp106.is_in_containment_cell( ply ) then return end
 
-		--  TODO: find a nicer way of coding abilities
-		if ability == guthscp106.ABILITIES.EXIT_DIMENSION then 
-			if not IsValid( ply.guthscp106_exit_sinkhole ) then return end
-
-			--  sink to exit sinkhole
-			guthscp106.sink_to( ply, ply.guthscp106_exit_sinkhole:GetPos(), false, true )
-
-			--  delete exit sinkhole
-			local sinkhole = ply.guthscp106_exit_sinkhole
-			timer.Simple( 3.0, function()
-				if not IsValid( sinkhole ) then return end
-				sinkhole:QueueRemove()
-			end )
-			ply.guthscp106_exit_sinkhole = nil
-		elseif ability == guthscp106.ABILITIES.ENTER_DIMENSION then
-			local sinkhole_pos = ply:GetPos() 
-			if not guthscp106.is_valid_sinkhole_position( sinkhole_pos ) then
-				guthscp.player_message( ply, "Another sinkhole is too close from your position!" )
-				return
-			end
-
-			--  delete previous sinkhole
-			if IsValid( ply.guthscp106_exit_sinkhole ) then 
-				ply.guthscp106_exit_sinkhole:QueueRemove()
-			end
-
-			--  create new sinkhole
-			ply.guthscp106_exit_sinkhole = guthscp106.create_sinkhole( sinkhole_pos, ply )
-
-			--  sink to dimension
-			guthscp106.sink_to_dimension( ply )
-		elseif ability == guthscp106.ABILITIES.PLACE_SINKHOLE then
-			local sinkhole_pos = ply:GetPos() 
-			if not guthscp106.is_valid_sinkhole_position( sinkhole_pos ) then
-				guthscp.player_message( ply, "Another sinkhole is too close from your position!" )
-				return
-			end
-
-			--  delete previous sinkhole
-			if IsValid( ply.guthscp106_waypoint ) then
-				ply.guthscp106_waypoint:QueueRemove()
-			end
-
-			--  create new sinkhole
-			ply.guthscp106_waypoint = guthscp106.create_sinkhole( sinkhole_pos, ply )
-		elseif ability == guthscp106.ABILITIES.ENTER_SINKHOLE then
-			if not IsValid( ply.guthscp106_waypoint ) then return end
-
-			--  sink to waypoint
-			guthscp106.sink_to( ply, ply.guthscp106_waypoint:GetPos(), false, true )
-		end
+		if not abilities[ability] then return end
+		abilities[ability]( ply )
 	end
 else
 	function guthscp106.use_ability( ability )
