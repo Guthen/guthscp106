@@ -63,6 +63,18 @@ function guthscp106.is_valid_sinkhole_position( pos )
 	return true
 end
 
+function guthscp106.get_walking_sinkhole( ply )
+	return ply:GetNWEntity( "guthscp106:sinkhole", nil )
+end
+
+function guthscp106.is_in_pocket_dimension( ent )
+	return guthscp106.pocket_dimension_zone:is_in( ent )
+end
+
+function guthscp106.is_in_containment_cell( ent )
+	return guthscp106.containment_cell_zone:is_in( ent )
+end
+
 function guthscp106.play_corrosion_sound( ent )
 	guthscp.sound.play( ent, config.sounds_corrosion, config.sound_hear_distance, false, config.sound_corrosion_volume )
 end
@@ -92,6 +104,7 @@ if SERVER then
 
 	function guthscp106.use_ability( ply, ability )
 		if not guthscp106.is_scp_106( ply ) then return end
+		if config.auto_disable_abilities and guthscp106.is_in_containment_cell( ply ) then return end
 
 		--  TODO: find a nicer way of coding abilities
 		if ability == guthscp106.ABILITIES.EXIT_DIMENSION then 

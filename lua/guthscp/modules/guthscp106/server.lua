@@ -63,18 +63,6 @@ function guthscp106.set_walking_sinkhole( ply, sinkhole )
 	ply:SetNWEntity( "guthscp106:sinkhole", sinkhole )
 end
 
-function guthscp106.get_walking_sinkhole( ply )
-	return ply:GetNWEntity( "guthscp106:sinkhole", nil )
-end
-
-function guthscp106.is_in_pocket_dimension( ent )
-	return guthscp106.pocket_dimension_zone:is_in( ent )
-end
-
-function guthscp106.is_in_containment_cell( ent )
-	return guthscp106.containment_cell_zone:is_in( ent )
-end
-
 function guthscp106.apply_corrosion_damage( ent )
 	local damage = math.max( 1.0, ent:GetMaxHealth() * config.dimension_corrosion_damage )
 	ent:TakeDamage( damage )
@@ -83,6 +71,7 @@ end
 
 hook.Add( "PlayerNoClip", "aaa_guthscp106:noclip", function( ply )
 	if config.noclip and guthscp106.is_scp_106( ply ) then
+		if config.auto_disable_abilities and guthscp106.is_in_containment_cell( ply ) then return end
 		return true
 	end
 end )

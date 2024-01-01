@@ -58,6 +58,13 @@ MODULE.menu = {
 					default = true,
 				},
 				{
+					type = "Bool",
+					name = "Auto-Disable Abilities",
+					id = "auto_disable_abilities",
+					desc = "If checked, SCP-106 can't use his abilities and noclip when he is contained. He is consider contained when he is located inside the 'GuthSCP-106 Containment Cell' zone, which you need to configure using the 'Zone Configurator' tool.",
+					default = true,
+				},
+				{
 					type = "Number",
 					name = "Keycard Level",
 					id = "keycard_level",
