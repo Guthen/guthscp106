@@ -6,9 +6,11 @@ ENT.Spawnable = false
 
 function ENT:SetupDataTables()
 	self:NetworkVar( "Float", 0, "QueueRemoveTime" )
+	self:NetworkVar( "Int", 0, "NearbyPreysCount" )
 
 	if SERVER then
 		self:SetQueueRemoveTime( -1.0 )
+		self:SetNearbyPreysCount( 0 )
 	end
 end
 

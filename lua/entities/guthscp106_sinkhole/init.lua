@@ -27,10 +27,11 @@ end
 function ENT:Think()
 	local owner = self:GetOwner()
 	
-	--  signal owner from nearby beings
+	--  find nearby humans
 	if IsValid( owner ) and config.sinkhole_signal_distance > 0 then
 		local count = 0
 
+		--  count
 		for i, ent in ipairs( ents.FindInSphere( self:GetPos(), config.sinkhole_signal_distance ) ) do
 			if not ent:IsPlayer() then continue end
 			if guthscp106.is_sinking( ent ) then continue end
@@ -39,9 +40,9 @@ function ENT:Think()
 			count = count + 1
 		end
 
-		if count > 0 then
-			--  TODO: find a more immersive and less spamy way of alerting 
-			owner:PrintMessage( HUD_PRINTTALK, ( "There is %d humans around your sinkhole" ):format( count ) )
+		--  update and network
+		if count ~= self:GetNearbyPreysCount() then
+			self:SetNearbyPreysCount( count )
 		end
 	end
 
@@ -96,9 +97,10 @@ function ENT:Touch( ent )
 	guthscp106.sink_to_dimension( ent )
 	guthscp106.play_corrosion_sound( self )
 
+	--  alert owner
 	local owner = self:GetOwner()
 	if IsValid( owner ) then
-		owner:PrintMessage( HUD_PRINTTALK, "Someone fell into your dimension" )
+		guthscp.player_message( owner, "Someone fell into your dimension" )
 	end
 end
 
@@ -107,6 +109,11 @@ function ENT:EndTouch( ent )
 	if guthscp106.get_walking_sinkhole( ent ) ~= self then return end
 
 	guthscp106.set_walking_sinkhole( ent, nil )
+end
+
+function ENT:UpdateTransmitState()
+	--  set as always so GetNearbyPreysCount
+	return TRANSMIT_ALWAYS
 end
 
 local authorized_players = {}
