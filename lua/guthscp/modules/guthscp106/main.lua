@@ -325,6 +325,32 @@ MODULE.menu = {
 					min = 0.0,
 				},
 			},
+			"Femur Breaker",
+			{
+				{
+					type = "Number",
+					name = "Button ID",
+					id = "femur_button_id",
+					desc = "The button map ID of the femur breaker",
+					default = -1,
+				},
+				{
+					type = "Vector",
+					name = "Sink Position",
+					id = "femur_sink_position",
+					desc = "Position to teleport SCP-106 after the femur breaker have been triggered",
+					default = vector_origin,
+					show_usepos = true,
+				},
+				{
+					type = "Number",
+					name = "Sink Delay",
+					id = "femur_sink_delay",
+					desc = "In seconds, how much time it takes to sink SCP-106 in the containment cell after the femur breaker trigger?",
+					default = 8.0,
+					min = 0.1,
+				},
+			},
 			"Sounds",
 			{
 				{

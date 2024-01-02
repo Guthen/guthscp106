@@ -73,6 +73,10 @@ function guthscp106.is_sinking( ply )
 	return ply:GetNWBool( "guthscp106:is_sinking", false )
 end
 
+function guthscp106.is_containing( ply )
+	return ply:GetNWBool( "guthscp106:is_containing", false )
+end
+
 function guthscp106.get_sinkhole( ply, slot )
 	return ply:GetNWEntity( "guthscp106:" .. slot, NULL )
 end
@@ -191,7 +195,8 @@ if SERVER then
 
 	function guthscp106.use_ability( ply, ability )
 		if not guthscp106.is_scp_106( ply ) then return end
-		if config.auto_disable_abilities and guthscp106.is_in_containment_cell( ply ) then return end
+		if guthscp106.is_containing( ply ) then return end  --  avoid containing SCPs (in femur breaker event)
+		if config.auto_disable_abilities and guthscp106.is_in_containment_cell( ply ) then return end  --  forbid abilities inside cell
 
 		if not abilities[ability] then return end
 		abilities[ability]( ply )

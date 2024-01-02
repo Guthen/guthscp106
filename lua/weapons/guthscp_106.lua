@@ -106,6 +106,7 @@ function SWEP:Reload()
 	timer.Simple( .5, function() can_reload = true end )
 	
 	--  setup vars
+	local is_containing = guthscp106.is_containing( ply )
 	local is_contained = config.auto_disable_abilities and guthscp106.is_in_containment_cell( ply )
 	local is_in_pocket_dimension = guthscp106.is_in_pocket_dimension( ply )
 
@@ -128,7 +129,7 @@ function SWEP:Reload()
 					end
 				end
 
-				if is_contained then
+				if is_containing or is_contained then
 					button:SetEnabled( false )
 				end
 			end,
@@ -146,7 +147,7 @@ function SWEP:Reload()
 				button:SetText( "Enter Pocket Dimension" )
 				button:SetEnabled( not is_in_pocket_dimension )
 
-				if is_contained then
+				if is_containing or is_contained then
 					button:SetEnabled( false )
 				end
 			end,

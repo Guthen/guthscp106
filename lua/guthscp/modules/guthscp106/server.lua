@@ -75,8 +75,12 @@ function guthscp106.sink_to( ent, pos, should_suppress_sound, should_unsink, on_
 		if ent:IsPlayer() then
 			ent:SetMoveType( MOVETYPE_WALK )
 		end
-	end
 
+		--  call callback
+		if on_finish then
+			on_finish()
+		end
+	end
 
 	--  play sinking sound
 	if not should_suppress_sound then
@@ -94,6 +98,11 @@ end
 
 function guthscp106.set_sinking( ent, value )
 	ent:SetNWBool( "guthscp106:is_sinking", value )
+end
+
+--  Mark SCP-106 in containment phase, used during the femur breaker to avoid multiple calls  
+function guthscp106.set_containing( ply, value )
+	ply:SetNWBool( "guthscp106:is_containing", value )
 end
 
 function guthscp106.set_sinkhole( ply, sinkhole, slot )
@@ -185,5 +194,62 @@ timer.Create( "guthscp106:dimension-corrosion", 1.0, 0, function()
 	
 			guthscp106.apply_corrosion_damage( npc )
 		end
+	end
+end )
+
+hook.Add( "PlayerUse", "guthscp106:femur-breaker", function( ply, ent )
+	if ent:MapCreationID() ~= config.femur_button_id then return end 	--  check is the femur breaker button
+	if ent:GetInternalVariable( "m_bLocked" ) then return end  --  check is not locked
+
+	local scps_106 = guthscp106.get_scps_106()
+
+	--  check if a SCP-106 can be recontained
+	local should_recontain = false
+	for i, scp in ipairs( scps_106 ) do
+		if guthscp106.is_containing( scp ) then continue end  --  avoid SCPs already containing (in femur breaker event)
+		should_recontain = true
+	end
+	if not should_recontain then return end
+
+	--  find players in containment cell
+	local has_found_human = false
+	for i, ply in ipairs( player.GetAll() ) do
+		if guthscp.is_scp( ply ) then continue end
+		if not guthscp106.is_in_containment_cell( ply ) then continue end
+
+		has_found_human = true
+		break
+	end
+
+	--  trigger femur breaker
+	if has_found_human then
+		guthscp106:info( "Femur Breaker has been activated!" )
+
+		local time = config.femur_sink_delay
+		for i, scp in ipairs( scps_106 ) do
+			if guthscp106.is_containing( scp ) then continue end  --  avoid SCPs already containing (in femur breaker event)
+			if guthscp106.is_in_containment_cell( scp ) then continue end  --  check is already contained
+
+			--  alert SCP-106
+			guthscp.player_message( scp, ( "The Femur Breaker has been activated, you'll sink to the containment cell in %d seconds!" ):format( time ) )
+			
+			--  schedule sinking
+			timer.Simple( time, function()
+				if not IsValid( scp ) then return end
+				if not guthscp106.is_scp_106( scp ) then return end
+
+				guthscp106.sink_to( scp, config.femur_sink_position, false, true, function()
+					guthscp.player_message( scp, "Head to your containment cell and get your victim" )
+				end )
+				guthscp106.set_containing( scp, false )
+			end )
+
+			--  mark as containing
+			guthscp106.set_containing( scp, true )
+
+			guthscp106:info( "%s (%s) is going to containment cell in %d seconds", scp:GetName(), scp:SteamID(), time )
+		end
+	else
+		guthscp106:info( "Femur Breaker has been activated without humans inside the containment cell, resulting in no effect!" )
 	end
 end )
