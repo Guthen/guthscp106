@@ -431,6 +431,37 @@ MODULE.menu = {
 					min = 0.1,
 				},
 			},
+			"Translations",
+			{
+				{
+					type = "String",
+					name = "Not Grounded",
+					id = "translation_sinkhole_not_grounded",
+					desc = "Text shown to SCP-106 when he tries to place a sinkhole while not being grounded",
+					default = "You must be on ground to place a sinkhole!",
+				},
+				{
+					type = "String",
+					name = "Sinkhole Too Close",
+					id = "translation_sinkhole_too_close",
+					desc = "Text shown to SCP-106 when he tries to place a sinkhole too close from another one",
+					default = "Another sinkhole is too close from your position!",
+				},
+				{
+					type = "String",
+					name = "Femur Warning",
+					id = "translation_femur_breaker_warning",
+					desc = "Text shown to SCP-106 when the femur breaker has been activated. Available arguments: '{time}'",
+					default = "The Femur Breaker has been activated, you'll sink to the containment cell in {time} seconds!",
+				},
+				{
+					type = "String",
+					name = "Femur Hint",
+					id = "translation_femur_breaker_hint",
+					desc = "Text shown to SCP-106 after he has been teleported after femur breaker",
+					default = "Head to your containment cell and get your victim",
+				},
+			},
 			"Sounds",
 			{
 				{

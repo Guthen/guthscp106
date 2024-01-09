@@ -231,7 +231,15 @@ hook.Add( "PlayerUse", "guthscp106:femur-breaker", function( ply, ent )
 			if guthscp106.is_in_containment_cell( scp ) then continue end  --  check is already contained
 
 			--  alert SCP-106
-			guthscp.player_message( scp, ( "The Femur Breaker has been activated, you'll sink to the containment cell in %d seconds!" ):format( time ) )
+			guthscp.player_message( 
+				scp, 
+				guthscp.helpers.format_message( 
+					config.translation_femur_breaker_warning, 
+					{
+						time = time,
+					}
+				) 
+			)
 			
 			--  schedule sinking
 			timer.Simple( time, function()
@@ -239,7 +247,7 @@ hook.Add( "PlayerUse", "guthscp106:femur-breaker", function( ply, ent )
 				if not guthscp106.is_scp_106( scp ) then return end
 
 				guthscp106.sink_to( scp, config.femur_sink_position, false, true, function()
-					guthscp.player_message( scp, "Head to your containment cell and get your victim" )
+					guthscp.player_message( scp, config.translation_femur_breaker_hint )
 				end )
 				guthscp106.set_containing( scp, false )
 			end )

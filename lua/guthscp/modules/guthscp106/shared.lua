@@ -50,10 +50,9 @@ function guthscp106.is_scp_106( ply )
 end
 
 function guthscp106.is_valid_sinkhole_position( pos )
-	--  TODO: export translations in the config
 	--  check it's grounded
 	if not guthscp.world.is_ground( pos ) then
-		return false, "You must be on ground to place a sinkhole!"
+		return false, "not_grounded"
 	end
 
 	--  check distance from others sinkholes
@@ -61,7 +60,7 @@ function guthscp106.is_valid_sinkhole_position( pos )
 	if dist_sqr > 0.0 then
 		for i, sinkhole in ipairs( ents.FindByClass( "guthscp106_sinkhole" ) ) do
 			if pos:DistToSqr( sinkhole:GetPos() ) <= dist_sqr then
-				return false, "Another sinkhole is too close from your position!"
+				return false, "too_close"
 			end
 		end
 	end
@@ -133,7 +132,7 @@ if SERVER then
 		local sinkhole_pos = ply:GetPos() 
 		local can_place, reason = guthscp106.is_valid_sinkhole_position( sinkhole_pos )
 		if not can_place then
-			guthscp.player_message( ply, reason )
+			guthscp.player_message( ply, config["translation_sinkhole_" .. reason] )
 			return
 		end
 
@@ -166,7 +165,7 @@ if SERVER then
 			local sinkhole_pos = ply:GetPos() 
 			local can_place, reason = guthscp106.is_valid_sinkhole_position( sinkhole_pos )
 			if not can_place then
-				guthscp.player_message( ply, reason )
+				guthscp.player_message( ply, config["translation_sinkhole_" .. reason] )
 				return
 			end
 
