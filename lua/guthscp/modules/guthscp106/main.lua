@@ -413,6 +413,7 @@ MODULE.menu = {
 					id = "femur_button_id",
 					desc = "The button map ID of the femur breaker",
 					default = -1,
+					show_use_entity_map_id = true,
 				},
 				{
 					type = "Vector",
