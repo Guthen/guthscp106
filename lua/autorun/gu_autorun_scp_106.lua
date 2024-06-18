@@ -96,7 +96,6 @@ hook.Add("ShouldCollide", "GuthenSCP106DontCollide", function(ent1, ent2)
 			return false
 		end
 	end
-	return true
 end)
 
 hook.Add("PlayerNoClip", "SCP106Noclip", function(ply)
