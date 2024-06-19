@@ -616,6 +616,15 @@ function MODULE:init()
 	--  create zones
 	self.pocket_dimension_zone = guthscp.zone:new( "guthscp106_pocket_dimension", "GuthSCP-106 Pocket Dimension" )
 	self.containment_cell_zone = guthscp.zone:new( "guthscp106_containment_cell", "GuthSCP-106 Containment Cell" )
+
+	--  warn for old version
+	timer.Simple( 0, function()
+		if weapons.GetStored( "gu_scp_106" ) then
+			local text = "The old version of this addon is currently running on this server. Please, delete the '[SCP] Enhanced SCP-106' addon to avoid any possible conflicts."
+			self:add_error( text )
+			self:error( text )
+		end
+	end )
 end
 
 guthscp.module.hot_reload( "guthscp106" )
