@@ -198,6 +198,7 @@ timer.Create( "guthscp106:dimension-corrosion", 1.0, 0, function()
 end )
 
 hook.Add( "PlayerUse", "guthscp106:femur-breaker", function( ply, ent )
+	if config.femur_button_id <= -1 then return end  --  check if the config is set
 	if ent:MapCreationID() ~= config.femur_button_id then return end 	--  check is the femur breaker button
 	if ent:GetInternalVariable( "m_bLocked" ) then return end  --  check is not locked
 
