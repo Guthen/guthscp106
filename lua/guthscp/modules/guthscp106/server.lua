@@ -206,7 +206,7 @@ hook.Add( "PlayerUse", "guthscp106:femur-breaker", function( ply, ent )
 	--  check if a SCP-106 can be recontained
 	local should_recontain = false
 	for i, scp in ipairs( scps_106 ) do
-		if guthscp106.is_containing( scp ) then continue end  --  avoid SCPs already containing (in femur breaker event)
+		if guthscp106.is_containing( scp ) then continue end  --  avoid SCPs already containing (i.e. in femur breaker event)
 		should_recontain = true
 	end
 	if not should_recontain then return end

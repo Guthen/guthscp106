@@ -58,7 +58,6 @@ function SWEP:PrimaryAttack()
 	if not config.dimension_can_attack_scps and guthscp.is_scp( target ) then return end
 	if guthscp106.is_sinking( target ) then return end
 
-	--  TODO: in-pocket-dimension condition
 	if guthscp106.is_in_pocket_dimension( target ) then
 		--  deal different damage in pocket dimension
 		if config.attack_damage_in_dimension > 0.0 then
