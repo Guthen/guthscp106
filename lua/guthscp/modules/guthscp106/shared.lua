@@ -21,11 +21,11 @@ if SERVER then
 	end )
 	guthscp106.filter.event_removed:add_listener( "guthscp106:reset", function( ply )
 		--  delete sinkholes
-		if IsValid( ply.guthscp106_exit_sinkhole ) then
-			ply.guthscp106_exit_sinkhole:QueueRemove()
-		end
-		if IsValid( ply.guthscp106_waypoint ) then
-			ply.guthscp106_waypoint:QueueRemove()
+		for _, slot in pairs( guthscp106.SINKHOLE_SLOTS ) do
+			local sinkhole = guthscp106.get_sinkhole( ply, slot )
+			if IsValid( sinkhole ) then
+				sinkhole:QueueRemove()
+			end
 		end
 
 		--  collision
