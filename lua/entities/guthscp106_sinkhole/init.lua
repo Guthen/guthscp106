@@ -35,7 +35,7 @@ function ENT:Think()
 		for i, ent in ipairs( ents.FindInSphere( self:GetPos(), config.sinkhole_signal_distance ) ) do
 			if not ent:IsPlayer() then continue end
 			if guthscp106.is_sinking( ent ) then continue end
-			if guthscp.is_scp( ent ) then continue end
+			if guthscp106.is_scp_106( ent ) or guthscp.is_scp( ent ) then continue end
 
 			count = count + 1
 		end
