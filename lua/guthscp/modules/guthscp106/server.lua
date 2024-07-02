@@ -1,72 +1,90 @@
 local guthscp106 = guthscp.modules.guthscp106
 local config = guthscp.configs.guthscp106
 
+local function start_unsink_animation( ent, tick_time, steps, start_pos, offset_by_step, on_finish )
+	ent:SetPos( start_pos )
+
+	local step = 0
+	local timer_id = "guthscp106:unsink-" .. ent:EntIndex()
+	timer.Create( timer_id, tick_time, steps, function()
+		if not IsValid( ent ) then
+			timer.Remove( timer_id )
+			return
+		end
+
+		ent:SetPos( start_pos + offset_by_step * ( 1 + step ) )
+
+		step = step + 1
+		if step == steps then
+			if ent:IsPlayer() then
+				ent:SetMoveType( MOVETYPE_WALK )
+			end
+
+			--  remove sinking mark
+			guthscp106.set_sinking( ent, false )
+
+			--  call callback
+			if on_finish then
+				on_finish()
+			end
+		end
+	end )
+end
+
+local function start_sink_animation( ent, steps, pos, should_unsink, on_finish )
+	--  mark as sinking
+	guthscp106.set_sinking( ent, true )
+
+	--  set fly movement so it disables movement and looks better with the 3rd-person animation
+	if ent:IsPlayer() then
+		ent:SetMoveType( MOVETYPE_FLY )
+	end
+
+	--  setup animation variables
+	local start_pos = ent:GetPos()
+	local view_offset = ent:EyePos() - ent:GetPos()
+	local offset_by_step = view_offset / steps
+	local tick_time = config.sink_time / steps
+
+	--  start animation
+	local step = 0
+	local timer_id = "guthscp106:sink-" .. ent:EntIndex()
+	timer.Create( timer_id, tick_time, steps, function()
+		if not IsValid( ent ) then
+			timer.Remove( timer_id )
+			return
+		end
+
+		step = step + 1
+		if step == steps then
+			--  unsink animation
+			if should_unsink then
+				start_unsink_animation( ent, tick_time, steps, pos - view_offset + vector_up, offset_by_step, on_finish )
+			else
+				ent:SetPos( pos )
+				if ent:IsPlayer() then
+					ent:SetMoveType( MOVETYPE_WALK )
+				end
+
+				--  remove sinking mark
+				guthscp106.set_sinking( ent, false )
+
+				--  call callback
+				if on_finish then
+					on_finish()
+				end
+			end
+		else
+			ent:SetPos( start_pos - offset_by_step * ( 1 + step ) )
+		end
+	end )
+end
+
 function guthscp106.sink_to( ent, pos, should_suppress_sound, should_unsink, on_finish )
-	--  sink animation
+	--  check for playing animation
 	local steps = config.sink_steps
 	if steps > 0 then
-		--  mark as sinking
-		guthscp106.set_sinking( ent, true )
-		
-		--  set fly movement so it disables movement and looks better with the 3rd-person animation
-		if ent:IsPlayer() then
-			ent:SetMoveType( MOVETYPE_FLY )
-		end
-	
-		--  setup animation variables
-		local start_pos = ent:GetPos()
-		local view_offset = ent:EyePos() - ent:GetPos() 
-		local offset_by_step = view_offset / steps
-		local tick_time = config.sink_time / steps
-
-		--  start animation
-		local step = 0
-		timer.Create( "guthscp106:sink-" .. ent:EntIndex(), tick_time, steps, function()
-			step = step + 1
-			if step == steps then
-				--  unsink animation
-				if should_unsink then
-					step = 0
-	
-					start_pos = pos - view_offset + vector_up
-					ent:SetPos( start_pos )
-					
-					timer.Create( "guthscp106:unsink-" .. ent:EntIndex(), tick_time, steps, function()
-						ent:SetPos( start_pos + offset_by_step * ( 1 + step ) )
-	
-						step = step + 1
-						if step == steps then
-							if ent:IsPlayer() then
-								ent:SetMoveType( MOVETYPE_WALK )
-							end
-	
-							--  remove sinking mark
-							guthscp106.set_sinking( ent, false )
-	
-							--  call callback
-							if on_finish then
-								on_finish()
-							end
-						end
-					end )
-				else
-					ent:SetPos( pos )
-					if ent:IsPlayer() then
-						ent:SetMoveType( MOVETYPE_WALK )
-					end
-	
-					--  remove sinking mark
-					guthscp106.set_sinking( ent, false )
-	
-					--  call callback
-					if on_finish then
-						on_finish()
-					end
-				end
-			else
-				ent:SetPos( start_pos - offset_by_step * ( 1 + step ) )
-			end
-		end )
+		start_sink_animation( ent, steps, pos, should_unsink, on_finish )
 	else
 		--  teleport directly to position
 		ent:SetPos( pos )
@@ -143,8 +161,8 @@ end )
 
 hook.Add( "PlayerFootstep", "guthscp106:footstep", function( ply, pos, foot, sound, volume )
 	--  only accepts SCP-106 or players walking on a sinkhole or players in pocket dimension
-	if not guthscp106.is_scp_106( ply ) and 
-	   not IsValid( guthscp106.get_walking_sinkhole( ply ) ) and 
+	if not guthscp106.is_scp_106( ply ) and
+	   not IsValid( guthscp106.get_walking_sinkhole( ply ) ) and
 	   not guthscp106.is_in_pocket_dimension( ply ) then return end
 
 	--  emit sound
@@ -162,14 +180,14 @@ hook.Add( "SetupMove", "guthscp106:passthrough-speed", function( ply, mv, cmd )
 	if not tr.Hit then return end  --  check hit
 	if not config.passthrough_entity_classes[tr.Entity:GetClass()] and  --  check not a traversable class
 	   not ( config.passthrough_living_entities and guthscp.world.is_living_entity( tr.Entity ) ) then return end  --  check living entity
-	
+
 	local modifier_id = "guthscp106-passthrough"
 
 	--  play sound if start passing-through
 	if not guthscp.has_player_speed_modifier( ply, modifier_id ) then
 		guthscp.sound.play( tr.Entity, config.sounds_passthrough, config.sound_hear_distance, false, config.sound_corrosion_volume )
 	end
-	
+
 	--  scale movement speed
 	guthscp.apply_player_speed_modifier( ply, modifier_id, config.passthrough_speed_factor, config.passthrough_speed_time )
 end )
@@ -178,7 +196,7 @@ timer.Create( "guthscp106:dimension-corrosion", 1.0, 0, function()
 	if config.dimension_corrosion_damage == 0.0 then return end
 
 	--  TODO: add possibility to link a filter to a zone
-	
+
 	--  corrode players
 	for i, ply in ipairs( player.GetAll() ) do
 		if not guthscp106.is_in_pocket_dimension( ply ) then continue end
@@ -191,7 +209,7 @@ timer.Create( "guthscp106:dimension-corrosion", 1.0, 0, function()
 	if config.dimension_can_corrode_npcs then
 		for i, npc in ipairs( guthscp.get_npcs() ) do
 			if not guthscp106.is_in_pocket_dimension( npc ) then continue end
-	
+
 			guthscp106.apply_corrosion_damage( npc )
 		end
 	end
@@ -214,9 +232,9 @@ hook.Add( "PlayerUse", "guthscp106:femur-breaker", function( ply, ent )
 
 	--  find players in containment cell
 	local has_found_human = false
-	for i, ply in ipairs( player.GetAll() ) do
-		if guthscp.is_scp( ply ) then continue end
-		if not guthscp106.is_in_containment_cell( ply ) then continue end
+	for i, human in ipairs( player.GetAll() ) do
+		if guthscp.is_scp( human ) then continue end
+		if not guthscp106.is_in_containment_cell( human ) then continue end
 
 		has_found_human = true
 		break
@@ -232,16 +250,16 @@ hook.Add( "PlayerUse", "guthscp106:femur-breaker", function( ply, ent )
 			if guthscp106.is_in_containment_cell( scp ) then continue end  --  check is already contained
 
 			--  alert SCP-106
-			guthscp.player_message( 
-				scp, 
-				guthscp.helpers.format_message( 
-					config.translation_femur_breaker_warning, 
+			guthscp.player_message(
+				scp,
+				guthscp.helpers.format_message(
+					config.translation_femur_breaker_warning,
 					{
 						time = time,
 					}
-				) 
+				)
 			)
-			
+
 			--  schedule sinking
 			timer.Simple( time, function()
 				if not IsValid( scp ) then return end

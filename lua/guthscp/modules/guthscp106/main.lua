@@ -77,7 +77,7 @@ MODULE.menu = {
 					min = 0,
 					max = function( self, numwang )
 						if self:is_disabled() then return 0 end
-						
+
 						return guthscp.modules.guthscpkeycard.max_keycard_level
 					end,
 					is_disabled = function( self, numwang )

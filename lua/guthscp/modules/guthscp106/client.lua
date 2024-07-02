@@ -54,15 +54,15 @@ end
 hook.Add( "HUDPaint", "guthscp106:sinkholes", function()
 	if not config.sinkhole_hud_enabled then return end
 	if not guthscp106.is_scp_106() then return end
-	
+
 	local ply = LocalPlayer()
 	local eye_pos = ply:EyePos()
 	local aim = ply:GetAimVector()
-	
+
 	local font = config.sinkhole_hud_font
 	surface.SetFont( font )
 	local _, font_height = surface.GetTextSize( "A" )
-	
+
 	for slot_id, slot in pairs( guthscp106.SINKHOLE_SLOTS ) do
 		local sinkhole = guthscp106.get_sinkhole( ply, slot )
 		if not IsValid( sinkhole ) then continue end
@@ -71,12 +71,12 @@ hook.Add( "HUDPaint", "guthscp106:sinkholes", function()
 		local pos = sinkhole:GetPos()
 		local screen_pos = pos:ToScreen()
 		if not screen_pos.visible then continue end
-		
+
 		--  get direction and distance from eye 
 		local dir = pos - eye_pos
 		local dir_length = dir:Length()
 		local normalized_dir = dir / dir_length
-		
+
 		local alpha = config.sinkhole_hud_alpha
 
 		--  dot product aim & direction and compute alpha out of it
@@ -85,7 +85,7 @@ hook.Add( "HUDPaint", "guthscp106:sinkholes", function()
 			local dot = math.abs( math.max( min_value, normalized_dir:Dot( aim ) ) )
 			alpha = math.Remap( dot, min_value, 1.0, config.sinkhole_hud_minimum_alpha, config.sinkhole_hud_alpha )
 		end
-		
+
 		--  get drawing colors
 		local text_color = ColorAlpha( config.sinkhole_hud_text_color, alpha )
 		local outline_color = ColorAlpha( config.sinkhole_hud_outline_text_color, alpha )
@@ -94,7 +94,7 @@ hook.Add( "HUDPaint", "guthscp106:sinkholes", function()
 		--  draw name
 		draw.SimpleTextOutlined( "Sinkhole " .. slot_id, font, screen_pos.x, screen_pos.y, text_color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1.0, outline_color )
 		text_line = text_line + 1
-		
+
 		--  draw distance in meters
 		local meters = dir_length / 52.5
 		if config.sinkhole_hud_show_distance and meters > 5 then
@@ -102,7 +102,7 @@ hook.Add( "HUDPaint", "guthscp106:sinkholes", function()
 			draw.SimpleTextOutlined( text, font, screen_pos.x, screen_pos.y + text_line * font_height, text_color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1.0, outline_color )
 			text_line = text_line + 1
 		end
-		
+
 		--  draw preys counter
 		local preys_count = sinkhole:GetNearbyPreysCount()
 		if preys_count > 0 then

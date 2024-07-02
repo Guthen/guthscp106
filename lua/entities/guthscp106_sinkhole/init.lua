@@ -26,7 +26,7 @@ end
 
 function ENT:Think()
 	local owner = self:GetOwner()
-	
+
 	--  find nearby humans
 	if IsValid( owner ) and config.sinkhole_signal_distance > 0 then
 		local count = 0
@@ -87,8 +87,8 @@ function ENT:Touch( ent )
 		if ent:IsPlayer() then
 			guthscp.apply_player_speed_modifier( ent, "guthscp106-sinkhole", config.sinkhole_trigger_speed_factor, config.sinkhole_speed_time )
 		end
-		return 
-	end 
+		return
+	end
 
 	--  check config allow sinking entities
 	if not config.sinkhole_can_sink then return end
@@ -120,7 +120,7 @@ local authorized_players = {}
 function ENT:Use( ent )
 	if self:IsQueueRemoved() then return end
 	if self.IsUseDisabled then return end
-	
+
 	if not guthscp106.is_scp_106( ent ) then return end
 	if guthscp106.is_sinking( ent ) then return end
 
@@ -145,15 +145,15 @@ net.Receive( "guthscp106:sinkhole", function( len, ply )
 	end
 	if CurTime() - data.time > MAX_AUTHORIZATION_TIME then
 		guthscp106:warning( "%s (%s) tried to use a sinkhole while being out of authorization time!", ply:GetName(), ply:SteamID() )
-		return	
+		return
 	end
 	if not IsValid( data.sinkhole ) then
 		guthscp106:warning( "%s (%s) tried to use an invalid sinkhole!", ply:GetName(), ply:SteamID() )
-		return	
+		return
 	end
 	if data.sinkhole:GetPos():DistToSqr( ply:GetPos() ) > MAX_DISTANCE_SQR then
 		guthscp106:warning( "%s (%s) tried to use a sinkhole while being too far!", ply:GetName(), ply:SteamID() )
-		return	
+		return
 	end
 
 	--  sink to dimension

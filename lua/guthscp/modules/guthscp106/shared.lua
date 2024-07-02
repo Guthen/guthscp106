@@ -7,7 +7,7 @@ if SERVER then
 	guthscp106.filter:listen_disconnect()
 	guthscp106.filter:listen_weapon_users( "guthscp_106" )  --  being SCP-106 just mean a player having the weapon 
 
-    guthscp106.filter.event_added:add_listener( "guthscp106:setup", function( ply )
+	guthscp106.filter.event_added:add_listener( "guthscp106:setup", function( ply )
 		--  speeds
 		ply:SetSlowWalkSpeed( config.walk_speed )
 		ply:SetWalkSpeed( config.walk_speed )
@@ -15,7 +15,7 @@ if SERVER then
 
 		--  collision
 		ply:SetCustomCollisionCheck( true )
-		
+
 		--  sound
 		guthscp.sound.play( ply, config.sound_idle, config.sound_hear_distance, true, config.sound_idle_volume )
 	end )
@@ -23,10 +23,10 @@ if SERVER then
 		--  delete sinkholes
 		if IsValid( ply.guthscp106_exit_sinkhole ) then
 			ply.guthscp106_exit_sinkhole:QueueRemove()
-		end 
+		end
 		if IsValid( ply.guthscp106_waypoint ) then
 			ply.guthscp106_waypoint:QueueRemove()
-		end 
+		end
 
 		--  collision
 		ply:SetCustomCollisionCheck( false )
@@ -43,7 +43,7 @@ end
 
 function guthscp106.is_scp_106( ply )
 	if CLIENT and ply == nil then
-		ply = LocalPlayer() 
+		ply = LocalPlayer()
 	end
 
 	return guthscp106.filter:is_in( ply )
@@ -98,11 +98,11 @@ end
 
 --  pass-through entities
 hook.Add( "ShouldCollide", "guthscp106:nocollide", function( scp106, target )
-    if not scp106:IsPlayer() or not guthscp106.is_scp_106( scp106 ) then return end
+	if not scp106:IsPlayer() or not guthscp106.is_scp_106( scp106 ) then return end
 
 	--  pass-through living entity
-	if config.passthrough_living_entities and guthscp.world.is_living_entity( target ) then 
-		return false 
+	if config.passthrough_living_entities and guthscp.world.is_living_entity( target ) then
+		return false
 	end
 
 	if not config.passthrough_entity_classes[target:GetClass()] then return end  --  check not a traversable class
@@ -121,15 +121,14 @@ if SERVER then
 
 	function guthscp106.use_sinkhole_ability( ply, slot )
 		local last_sinkhole = guthscp106.get_sinkhole( ply, slot )
-
 		if guthscp106.is_in_pocket_dimension( ply ) then
 			if not IsValid( last_sinkhole ) then return end
-			
+
 			guthscp106.sink_to( ply, last_sinkhole:GetPos(), false, true )
 			return
 		end
 
-		local sinkhole_pos = ply:GetPos() 
+		local sinkhole_pos = ply:GetPos()
 		local can_place, reason = guthscp106.is_valid_sinkhole_position( sinkhole_pos )
 		if not can_place then
 			guthscp.player_message( ply, config["translation_sinkhole_" .. reason] )
@@ -137,7 +136,7 @@ if SERVER then
 		end
 
 		--  delete previous sinkhole
-		if IsValid( last_sinkhole ) then 
+		if IsValid( last_sinkhole ) then
 			last_sinkhole:QueueRemove()
 		end
 
@@ -162,7 +161,7 @@ if SERVER then
 			end
 
 			--  check sinkhole placement
-			local sinkhole_pos = ply:GetPos() 
+			local sinkhole_pos = ply:GetPos()
 			local can_place, reason = guthscp106.is_valid_sinkhole_position( sinkhole_pos )
 			if not can_place then
 				guthscp.player_message( ply, config["translation_sinkhole_" .. reason] )
@@ -175,7 +174,7 @@ if SERVER then
 			--  spawn sinkhole
 			local sinkhole = guthscp106.create_sinkhole( sinkhole_pos )
 			sinkhole.IsUseDisabled = true
-			
+
 			--  sink SCP-106 after some time
 			timer.Simple( config.sinkhole_anim_spawn_time * 0.5, function()
 				if not IsValid( sinkhole ) or not IsValid( ply ) then return end

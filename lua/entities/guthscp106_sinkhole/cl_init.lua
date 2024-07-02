@@ -49,9 +49,9 @@ function ENT:UpdateAnimation()
 	end
 
 	--  update animation
-	if anim_ratio < 1.0 or not ( self.cracks_size == 1.0 ) then
-		self.cracks_size = Lerp( math.ease.OutExpo( anim_ratio ), 0.0, 1.0 )
-		self.corrosion_size = Lerp( math.ease.InOutCubic( anim_ratio ), 0.0, 1.0 )
+	if anim_ratio < 1.0 or self.cracks_size ~= 1.0 then
+		self.cracks_size = math.ease.OutExpo( anim_ratio )
+		self.corrosion_size = math.ease.InOutCubic( anim_ratio )
 		self.corrosion_angle = Lerp( math.ease.OutQuad( anim_ratio ), self.start_corrosion_angle, self.target_corrosion_angle )
 	end
 end
@@ -63,7 +63,7 @@ function ENT:Draw()
 	--debugoverlay.Line( self:GetPos() - Vector( 0, 0, config.sinkhole_offset_z ), self:GetPos() + Vector( 0, 0, config.sinkhole_offset_z ), FrameTime(), Color( 255, 0, 0 ) )
 
 	self:UpdateAnimation()
-	
+
 	local size = config.sinkhole_size
 	local pos, normal = self.projected_pos, self.projected_normal
 
