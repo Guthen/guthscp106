@@ -467,7 +467,7 @@ MODULE.menu = {
 					name = "Femur Hint",
 					id = "translation_femur_breaker_hint",
 					desc = "Text shown to SCP-106 after he has been teleported after femur breaker",
-					default = "Head to your containment cell and get your victim",
+					default = "Head to your containment cell and get your victim!",
 				},
 			},
 			"Sounds",
