@@ -44,13 +44,13 @@ SWEP.GuthSCPLVL 		   	= 	0
 
 function SWEP:PrimaryAttack()
 	if not SERVER then return end
-	
+
 	--  check target is a living entity
 	local ply = self:GetOwner()
 	local target = guthscp.world.player_trace_attack( ply, config.distance_unit, config.attack_hull_size ).Entity
-	if not IsValid( target ) or not guthscp.world.is_living_entity( target ) then 
+	if not IsValid( target ) or not guthscp.world.is_living_entity( target ) then
 		self:SetNextPrimaryFire( CurTime() + 0.1 )
-		return 
+		return
 	end
 	self:SetNextPrimaryFire( CurTime() + 1.0 )
 
@@ -103,7 +103,7 @@ function SWEP:Reload()
 	if not can_reload then return end
 	can_reload = false
 	timer.Simple( .5, function() can_reload = true end )
-	
+
 	--  setup vars
 	local is_containing = guthscp106.is_containing( ply )
 	local is_contained = config.auto_disable_abilities and guthscp106.is_in_containment_cell( ply )
