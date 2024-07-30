@@ -450,6 +450,13 @@ MODULE.menu = {
 				},
 				{
 					type = "String",
+					name = "Sinkhole Catch Someone",
+					id = "translation_sinkhole_catch_someone",
+					desc = "Text shown to SCP-106 when someone fell into its sinkhole",
+					default = "Someone fell into your pocket dimension!",
+				},
+				{
+					type = "String",
 					name = "Femur Warning",
 					id = "translation_femur_breaker_warning",
 					desc = "Text shown to SCP-106 when the femur breaker has been activated. Available arguments: '{time}'",

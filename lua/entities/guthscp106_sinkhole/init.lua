@@ -100,7 +100,7 @@ function ENT:Touch( ent )
 	--  alert owner
 	local owner = self:GetOwner()
 	if IsValid( owner ) then
-		guthscp.player_message( owner, "Someone fell into your dimension" )
+		guthscp.player_message( owner, config.translation_sinkhole_catch_someone )
 	end
 end
 
