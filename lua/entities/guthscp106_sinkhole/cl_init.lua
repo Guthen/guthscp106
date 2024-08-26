@@ -59,9 +59,6 @@ end
 local material_corrosion = Material( "guthscp/106/decal_corrosion" )
 local material_cracks = Material( "guthscp/106/decal_cracks" )
 function ENT:Draw()
-	--debugoverlay.Axis( self:GetPos(), self:GetAngles(), 15.0, FrameTime() )
-	--debugoverlay.Line( self:GetPos() - Vector( 0, 0, config.sinkhole_offset_z ), self:GetPos() + Vector( 0, 0, config.sinkhole_offset_z ), FrameTime(), Color( 255, 0, 0 ) )
-
 	self:UpdateAnimation()
 
 	local size = config.sinkhole_size
@@ -74,6 +71,12 @@ function ENT:Draw()
 	--  corrosion
 	render.SetMaterial( material_corrosion )
 	render.DrawQuadEasy( pos, normal, self.corrosion_size * size, self.corrosion_size * size, color_white, self.corrosion_angle )
+
+	--  debug
+	--[[ debugoverlay.Line( self:GetPos() - Vector( 0, 0, config.sinkhole_offset_z ), self:GetPos() + Vector( 0, 0, config.sinkhole_offset_z ), FrameTime(), Color( 255, 0, 0 ) )
+	debugoverlay.Sphere( self:GetPos(), size * config.sinkhole_distance_ratio * config.sinkhole_sink_size_ratio * 0.5, FrameTime(), Color( 255, 0, 0 ) )
+	debugoverlay.Line( self:GetPos() + Vector( size, size, 0.0 ) * 0.5, self:GetPos() + Vector( -size, -size, 0.0 ) * 0.5, FrameTime(), color_white )
+	debugoverlay.Line( self:GetPos() + Vector( size, -size, 0.0 ) * 0.5, self:GetPos() + Vector( -size, size, 0.0 ) * 0.5, FrameTime(), color_white ) ]]
 end
 
 net.Receive( "guthscp106:sinkhole", function()
