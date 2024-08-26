@@ -253,8 +253,11 @@ MODULE.menu = {
 					type = "Number",
 					name = "Trigger Size Ratio",
 					id = "sinkhole_trigger_size_ratio",
-					desc = "Size of sinkholes hitbox in relation to their 'Size', in percent (changes need to re-create entities to take effect)",
+					desc = "Size ratio of sinkholes hitbox in relation to their 'Size', in percent. Changes to this variable only apply to new entities.",
 					default = 0.8,
+					interval = 0.1,
+					min = 0.1,
+					max = 1.0,
 				},
 				{
 					type = "Number",
