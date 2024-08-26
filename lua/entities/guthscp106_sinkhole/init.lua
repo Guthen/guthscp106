@@ -81,7 +81,7 @@ function ENT:Touch( ent )
 	if guthscp106.is_sinking( ent ) then return end
 
 	--  check sink distance
-	local dist = config.sinkhole_size * config.sinkhole_distance_ratio * 0.5
+	local dist = config.sinkhole_size * config.sinkhole_distance_ratio * config.sinkhole_sink_size_ratio
 	if ent:GetPos():DistToSqr( self:GetPos() ) >= dist * dist then
 		--  slow players
 		if ent:IsPlayer() then
