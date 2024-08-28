@@ -64,13 +64,15 @@ function SWEP:PrimaryAttack()
 			target:TakeDamage( config.attack_damage_in_dimension, ply, self )
 		end
 	else
-		--  teleport and damage
-		guthscp106.sink_to_dimension( target )
-		guthscp106.play_corrosion_sound( self )
-
+		--  damage
 		if config.attack_damage > 0.0 then
 			target:TakeDamage( config.attack_damage, ply, self )
+			if not target:Alive() then return end
 		end
+
+		--  teleport
+		guthscp106.sink_to_dimension( target )
+		guthscp106.play_corrosion_sound( self )
 	end
 end
 
