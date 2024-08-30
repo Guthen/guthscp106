@@ -1,39 +1,54 @@
-# [SCP] Enhanced SCP-106
+# [GuthSCP] SCP-106 
+
 ## Steam Workshop
-![Steam Views](https://img.shields.io/steam/views/1783768332?color=red&style=for-the-badge)
-![Steam Downloads](https://img.shields.io/steam/downloads/1783768332?color=red&style=for-the-badge)
-![Steam Favorites](https://img.shields.io/steam/favorites/1783768332?color=red&style=for-the-badge)
+![Steam Views](https://img.shields.io/steam/views/3299645132?color=red&style=for-the-badge)
+![Steam Downloads](https://img.shields.io/steam/downloads/3299645132?color=red&style=for-the-badge)
+![Steam Favorites](https://img.shields.io/steam/favorites/3299645132?color=red&style=for-the-badge)
 
-This addon is available on the Workshop [here](https://steamcommunity.com/sharedfiles/filedetails/?id=1783768332)!
+This addon is available on the Workshop [here](https://steamcommunity.com/sharedfiles/filedetails/?id=3299645132)!
 
-## What is it ?
-It's a SWEP which let SCP-106 to be great (again). He can pass through props (doors, spawned props..) (not the map because it's impossible to do it correctly), he can fly (BUT 106 DOESN'T FLY) (it should be use to get back to world from his dimension), it has a unique weapon that allow to him to send people (or himself) in his dimension or to laugh, he can breath (sound), he has footsteps sounds (and footsteps hints), he can't take damage (BECAUSE HE PASS THROUGH MATERIAL), and I think that it's.
+## Features
+Contains a SWEP, of class `guthscp_106`, designed for multiplayer:
++ **Left Mouse Button** to **sink players or NPCs into your pocket dimension** and to **inflict them damage**
++ **Right Mouse Button** to **laugh at your preys**
++ **Reload** to **place your sinkholes** or to **return into your pocket dimension**
++ **Travel back to your sinkholes** from your pocket dimension and move from one sinkhole to another
++ **Pass-through obstacles** including doors, props, vehicles, players, NPCs and NextBots
++ **Get alerted by your sinkholes** from nearby preys
++ **Catch players and NPCs** inside your pocket dimension by them walking on your sinkholes
++ **Corrode players and NPCs** inside the pocket dimension, dealing damage over time
++ **Recontain SCP-106 by using the Femur Breaker**
++ **Cool sinkhole animations**
++ **Emit custom sounds** when passing-through obstacles, walking, placing sinkholes or falling into the pocket dimension
++ Configurable in-game with [[GuthSCP] Base](https://steamcommunity.com/sharedfiles/filedetails/?id=3034737316) (`guthscp_menu` in your console)
+    + **+60 configuration variables** that you can tweak
+    + Movement speeds, no-clip, immortality, pocket dimension corrosion, pass-through speed modifier, sinkhole properties, sinkhole HUD, femur breaker, etc.
+    + **Weapon** aim and cooldowns
+	+ **Translation** texts
+    + **Sound** paths
+    + (optional) [[GuthSCP] Keycard](https://steamcommunity.com/sharedfiles/filedetails/?id=3034740776) custom access
+    + *and more..*
++ (fun) Allow multiple SCP-106 instances
++ **Not gamemode-dependent**
 
-## To get it to work
-+ Create your TEAM_SCP106 job;
-+ Set the Dimension position and some collisions to your map :
-    + *guthscp_set_106_dimension* : set the dimension position to your current position
-    + *guthscp_set_106_collide* : look at the map prop that you want to collide with 106 and enter this command, 106 shouldn't be able to pass through it.
-    + *guthscp_set_106_uncollide* : look at the map prop that you want to uncollide with 106 and enter this command, 106 should be able to pass through it.
-All is saved now, you don't have to worry about it.
+## How to setup the mod?
++ Configure **'GuthSCP-106 Pocket Dimension' and 'GuthSCP-106 Containment Cell' zones** via the **'Zone Configurator' tool** from the **'GuthSCP'** category
++ Configure **'GuthSCP-106 Pass-through' map entities** via the **'Map Entities Filter Configurator' tool** from the **'GuthSCP'** category
++ Configure the addon variables such as **Pocket Dimension 'Teleport Position'** and **Femur Breaker 'Button ID'**
++ (optional) Configure the rest of the addon variables as you like 
 
 ## Known Issues
-### "The SWEP is here but the whole script doesn't work"
-For now, this mod is compatible only with team-based gamemodes such as **DarkRP** (not Sandbox). I planning on redo this addon to link it to [guthscpbase](https://github.com/Guthen/guthscpbase) and to improve the mod in general, so this issue will be fixed.
+### "This addon doesn't work!"
+Ensure that you have installed [[GuthSCP] Base](https://steamcommunity.com/sharedfiles/filedetails/?id=3034737316) on your server. Verify that you can open the configuration menu with `guthscp_menu` in your game console.
 
-### "SCP-106 can't pass through doors and props"
-First, this issue can be caused if SCP-106 didn't respawn when he take his job, so if you use DarkRP, be sure that **GM.Config.norespawn** is set to **false**. Also make sure that your SCP-106 job is named **TEAM_SCP106** in your DarkRP's jobs code.
+### "I can't hear the sounds!"
+Ensure that you have installed [Guthen SCP Content](https://steamcommunity.com/workshop/filedetails/?id=1673048305) on your client.
 
-Otherwise, this issue is mostly caused by an addon conflict. [CPTBase](https://steamcommunity.com/sharedfiles/filedetails/?id=470726908&searchtext=cptbase) is known to produce this problem, check this [topic](https://steamcommunity.com/workshop/filedetails/discussion/1783768332/5197701062327818946/) to  resolve this. If it still doesn't work, try this command in your server's console and write in the comment section what it returns (don't forget quotes around 'ShouldCollide') : 
-
-```lua
-lua_run for k, v in pairs( hook.GetTable()["ShouldCollide"] ) do local info = debug.getinfo( v, "S" ) print( k, ( "%s (lines %d to %d)" ):format( info.short_src, info.linedefined, info.lastlinedefined ) ) end
-```
-
-For curious, this code will only show other addons's files who use the same hook as mine with the code location.
+Otherwise, check the configured sounds paths in the configuration menu. 
 
 ## Legal Terms
-This addon is licensed under [Creative Commons Sharealike 3.0](https://creativecommons.org/licenses/by-sa/3.0/) and is based on [SCP-106](http://scp-wiki.wikidot.com/scp-106) by "Dr Gears".
+This addon is licensed under [Creative Commons Sharealike 3.0](https://creativecommons.org/licenses/by-sa/3.0/) and is based on [SCP-106](http://scp-wiki.wikidot.com/scp-106). It is also inspired by [SCP: Secret Laboratory](https://store.steampowered.com/app/700330/SCP_Secret_Laboratory/) from Northwood Studios.
+
 If you create something derived from this, please credit me (you can also tell me about what you've done).
 
-Enjoy it !
+***Enjoy !***
