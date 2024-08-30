@@ -4,7 +4,7 @@ local MODULE = {
 	version = "2.0.0",
 	description = [[Be SCP-106 and creep the fuck out of people!]],
 	icon = "guthscp/icons/guthscp106.png",
-	--version_url = "https://raw.githubusercontent.com/Guthen/guthscp173/update-to-guthscpbase-remaster/lua/guthscp/modules/guthscp173/main.lua",
+	version_url = "https://raw.githubusercontent.com/Guthen/guthscp106/master/lua/guthscp/modules/guthscp106/main.lua",
 	dependencies = {
 		base = "2.2.0",
 	},
@@ -609,7 +609,7 @@ MODULE.menu = {
 		{
 			text = "Steam",
 			icon = "guthscp/icons/steam.png",
-			url = "https://steamcommunity.com/sharedfiles/filedetails/?id=1783768332"
+			url = "https://steamcommunity.com/sharedfiles/filedetails/?id=3299645132"
 		},
 		{
 			text = "Discord",
