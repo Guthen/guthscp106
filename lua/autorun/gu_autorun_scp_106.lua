@@ -1,3 +1,15 @@
+--  warn for new version
+local message = "[IMPORTANT] You are using an old version of Guthen's SCP 106 addon, please consider upgrading to the new version. You can find the new addons in this collection: https://steamcommunity.com/sharedfiles/filedetails/?id=3034749707"
+MsgC( Color( 255, 0, 0 ), message, "\n" )
+if CLIENT then
+    hook.Add( "InitPostEntity", "GuthSCP:NewSCP106Version", function()
+        timer.Simple( 5, function()
+            if not LocalPlayer():IsAdmin() then return end
+            chat.AddText( Color( 161, 154, 255 ), message )
+        end )
+    end )
+end
+
 local DimensionPos106 = DimensionPos106 or
 	{
 --		["rp_scp_site_8_v2b"] = Vector(-781, -10808, 744),
