@@ -1,7 +1,7 @@
 local MODULE = {
 	name = "SCP-106",
 	author = "Guthen",
-	version = "2.0.0",
+	version = "2.0.1",
 	description = [[Be SCP-106 and creep the fuck out of people!]],
 	icon = "guthscp/icons/guthscp106.png",
 	version_url = "https://raw.githubusercontent.com/Guthen/guthscp106/master/lua/guthscp/modules/guthscp106/main.lua",
