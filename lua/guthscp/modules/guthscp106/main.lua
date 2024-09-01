@@ -142,7 +142,7 @@ MODULE.menu = {
 					type = "Number",
 					name = "Distance Unit",
 					id = "distance_unit",
-					desc = "Maximum distance where SCP-106 can attacks his targets. 1 meter ~= 40 unit",
+					desc = "Maximum distance where SCP-106 can attacks his targets, in Hammer units. 1 meter ~= 40 unit",
 					default = 50,
 				},
 				{
