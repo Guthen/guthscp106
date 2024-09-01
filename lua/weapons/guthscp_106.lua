@@ -67,7 +67,7 @@ function SWEP:PrimaryAttack()
 		--  damage
 		if config.attack_damage > 0.0 then
 			target:TakeDamage( config.attack_damage, ply, self )
-			if not target:Alive() then return end
+			if target:Health() <= 0 then return end
 		end
 
 		--  teleport
