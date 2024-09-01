@@ -96,7 +96,13 @@ end
 
 local can_reload = true
 function SWEP:Reload()
-	if not CLIENT then return end
+	if not CLIENT then
+		--  fixes Reload not being called in singleplayer
+		if game.SinglePlayer() then
+			self:CallOnClient( "Reload" )
+		end
+		return
+	end
 
 	local ply = LocalPlayer()
 	if guthscp106.is_sinking( ply ) then return end
