@@ -47,7 +47,15 @@ function SWEP:PrimaryAttack()
 
 	--  check target is a living entity
 	local ply = self:GetOwner()
-	local target = guthscp.world.player_trace_attack( ply, config.distance_unit, config.attack_hull_size ).Entity
+	local target = guthscp.world.player_trace_attack(
+		ply,
+		config.distance_unit,
+		Vector(
+			config.attack_hull_size,
+			config.attack_hull_size,
+			config.attack_hull_size
+		)
+	).Entity
 	if not IsValid( target ) or not guthscp.world.is_living_entity( target ) then
 		self:SetNextPrimaryFire( CurTime() + 0.1 )
 		return
