@@ -1,7 +1,7 @@
 local MODULE = {
 	name = "SCP-106",
 	author = "Guthen",
-	version = "2.0.1",
+	version = "2.0.2",
 	description = [[Be SCP-106 and creep the fuck out of people!]],
 	icon = "guthscp/icons/guthscp106.png",
 	version_url = "https://raw.githubusercontent.com/Guthen/guthscp106/master/lua/guthscp/modules/guthscp106/main.lua",
@@ -194,6 +194,7 @@ MODULE.menu = {
 						"prop_static",
 						"prop_door_rotating",
 						"prop_vehicle_jeep",
+						"phys_bone_follower",  --  this entity somehow prevents from passing-through doors in maps such as rp_scp_site19
 					} ),
 					is_set = true,
 				},
