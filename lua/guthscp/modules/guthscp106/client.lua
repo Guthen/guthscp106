@@ -92,7 +92,20 @@ hook.Add( "HUDPaint", "guthscp106:sinkholes", function()
 		local text_line = 0
 
 		--  draw name
-		draw.SimpleTextOutlined( "Sinkhole " .. slot_id, font, screen_pos.x, screen_pos.y, text_color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1.0, outline_color )
+		draw.SimpleTextOutlined(
+			guthscp.helpers.format_message(
+				config.translation_hud_sinkhole,
+				{
+					sinkhole = slot_id,
+				}
+			),
+			font,
+			screen_pos.x, screen_pos.y,
+			text_color,
+			TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
+			1.0,
+			outline_color
+		)
 		text_line = text_line + 1
 
 		--  draw distance in meters
@@ -109,7 +122,12 @@ hook.Add( "HUDPaint", "guthscp106:sinkholes", function()
 			text_color = guthscp.helpers.lerp_color( math.abs( math.sin( CurTime() * 3.0 ) ), config.sinkhole_hud_prey1_text_color, config.sinkhole_hud_prey2_text_color )
 			outline_color = config.sinkhole_hud_outline_text_color
 
-			local text = ( "%d preys!" ):format( preys_count )
+			local text = guthscp.helpers.format_message(
+				config.translation_hud_preys,
+				{
+					count = preys_count,
+				}
+			)
 			draw.SimpleTextOutlined( text, font, screen_pos.x, screen_pos.y + ( text_line + 0.5 ) * font_height, text_color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1.0, outline_color )
 			text_line = text_line + 1
 		end

@@ -484,6 +484,20 @@ MODULE.menu = {
 				},
 				{
 					type = "String",
+					name = "HUD: Sinkhole",
+					id = "translation_hud_sinkhole",
+					desc = "Text shown to SCP-106 on his HUD on sinkholes. Available arguments: '{sinkhole}'",
+					default = "Sinkhole {sinkhole}",
+				},
+				{
+					type = "String",
+					name = "HUD: Preys",
+					id = "translation_hud_preys",
+					desc = "Text shown to SCP-106 on his HUD on sinkholes counting the number of preys around. Available arguments: '{count}'",
+					default = "{count} preys!",
+				},
+				{
+					type = "String",
 					name = "Menu: Go To Sinkhole",
 					id = "translation_menu_go_to_sinkhole",
 					desc = "Text shown to SCP-106 from his menu to go to a sinkhole. Available arguments: '{sinkhole}'",
