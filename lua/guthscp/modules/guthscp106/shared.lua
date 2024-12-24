@@ -162,14 +162,15 @@ if SERVER then
 			guthscp106.use_sinkhole_ability( ply, guthscp106.SINKHOLE_SLOTS.B )
 		end,
 		[guthscp106.ABILITIES.ENTER_DIMENSION] = function( ply )
+			local last_sinkhole = guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.TEMP )
+			
 			--	sink to temporary sinkhole if inside pocket dimension
 			if guthscp106.is_in_pocket_dimension( ply ) then
-				local sinkhole = guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.TEMP )
-				if not IsValid( sinkhole ) then return end
+				if not IsValid( last_sinkhole ) then return end
 
-				guthscp106.sink_to( ply, sinkhole:GetPos(), false, true, function()
-					if not IsValid( sinkhole ) then return end
-					sinkhole:QueueRemove()
+				guthscp106.sink_to( ply, last_sinkhole:GetPos(), false, true, function()
+					if not IsValid( last_sinkhole ) then return end
+					last_sinkhole:QueueRemove()
 				end )
 				return
 			end
@@ -178,6 +179,11 @@ if SERVER then
 			if ply:GetMoveType() == MOVETYPE_NOCLIP then
 				guthscp106.sink_to_dimension( ply )
 				return
+			end
+
+			--	delete last temporary sinkhole if exists
+			if IsValid( last_sinkhole ) then
+				last_sinkhole:QueueRemove()
 			end
 
 			--  check sinkhole placement
@@ -192,7 +198,7 @@ if SERVER then
 			ply:SetMoveType( MOVETYPE_NONE )
 
 			--  spawn sinkhole
-			local sinkhole = guthscp106.create_sinkhole( sinkhole_pos )
+			local sinkhole = guthscp106.create_sinkhole( sinkhole_pos, ply )
 			sinkhole.IsUseDisabled = true
 			guthscp106.set_sinkhole( ply, sinkhole, guthscp106.SINKHOLE_SLOTS.TEMP )
 
