@@ -132,10 +132,24 @@ function SWEP:Reload()
 				local sinkhole = guthscp106.get_sinkhole( ply, slot )
 
 				if is_in_pocket_dimension then
-					button:SetText( "Go To Sinkhole " .. name )
+					button:SetText(
+						guthscp.helpers.format_message(
+							config.translation_menu_go_to_sinkhole,
+							{
+								sinkhole = name,
+							}
+						)
+					)
 					button:SetEnabled( IsValid( sinkhole ) )
 				else
-					button:SetText( "Place Sinkhole " .. name )
+					button:SetText( 
+						guthscp.helpers.format_message(
+							config.translation_menu_place_sinkhole,
+							{
+								sinkhole = name,
+							}
+						)
+					)
 
 					if IsValid( sinkhole ) then
 						button:SetColor( Color( 0, 200, 0 ) )
@@ -160,12 +174,12 @@ function SWEP:Reload()
 		{
 			init = function( button )
 				if is_in_pocket_dimension then
-					button:SetText( "Exit Pocket Dimension" )
+					button:SetText( config.translation_menu_exit_dimension )
 					if not IsValid( guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.TEMP ) ) then
 						button:SetEnabled( false )
 					end
 				else
-					button:SetText( "Enter Pocket Dimension" )
+					button:SetText( config.translation_menu_enter_dimension )
 				end
 
 				if is_containing or is_contained then

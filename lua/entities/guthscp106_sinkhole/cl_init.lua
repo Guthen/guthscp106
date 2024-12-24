@@ -91,7 +91,15 @@ net.Receive( "guthscp106:sinkhole", function()
 				local sinkhole_b = guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.B )
 				local target_sinkhole = sinkhole == sinkhole_a and sinkhole_b or sinkhole_a
 
-				button:SetText( "Go To Sinkhole " .. ( sinkhole == sinkhole_a and "B" or "A" ) )
+				local name = sinkhole == sinkhole_a and "B" or "A"
+				button:SetText(
+					guthscp.helpers.format_message(
+						config.translation_menu_go_to_sinkhole,
+						{
+							sinkhole = name,
+						}
+					)
+				)
 				button:SetEnabled( IsValid( target_sinkhole ) )
 			end,
 			action = function()
@@ -102,7 +110,7 @@ net.Receive( "guthscp106:sinkhole", function()
 		},
 		{
 			init = function( button )
-				button:SetText( "Enter Pocket Dimension" )
+				button:SetText( config.translation_menu_enter_dimension )
 			end,
 			action = function()
 				net.Start( "guthscp106:sinkhole" )
