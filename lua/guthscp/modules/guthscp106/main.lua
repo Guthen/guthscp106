@@ -25,6 +25,7 @@ MODULE._ability_ubits = guthscp.helpers.number_of_ubits( MODULE.ABILITIES.ENTER_
 MODULE.SINKHOLE_SLOTS = {
 	A = "sinkhole-a",
 	B = "sinkhole-b",
+	TEMP = "temporary",  --  a temporary sinkhole to prevent SCP-106 getting stuck inside its pocket dimension 
 }
 
 MODULE.menu = {

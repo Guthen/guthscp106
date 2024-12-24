@@ -159,8 +159,14 @@ function SWEP:Reload()
 		create_sinkhole_option( guthscp106.SINKHOLE_SLOTS.A ),
 		{
 			init = function( button )
-				button:SetText( "Enter Pocket Dimension" )
-				button:SetEnabled( not is_in_pocket_dimension )
+				if is_in_pocket_dimension then
+					button:SetText( "Exit Pocket Dimension" )
+					if not IsValid( guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.TEMP ) ) then
+						button:SetEnabled( false )
+					end
+				else
+					button:SetText( "Enter Pocket Dimension" )
+				end
 
 				if is_containing or is_contained then
 					button:SetEnabled( false )

@@ -120,6 +120,16 @@ if SERVER then
 	end )
 
 	function guthscp106.use_sinkhole_ability( ply, slot )
+		--	delete temporary sinkhole whenever we use another one
+		local temp_sinkhole = guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.TEMP )
+		if IsValid( temp_sinkhole ) then
+			timer.Simple( config.sinkhole_anim_spawn_time, function()
+				if not IsValid( temp_sinkhole ) then return end
+				temp_sinkhole:QueueRemove()
+			end )
+		end
+
+		--	sink to the sinkhole if inside the pocket dimension
 		local last_sinkhole = guthscp106.get_sinkhole( ply, slot )
 		if guthscp106.is_in_pocket_dimension( ply ) then
 			if not IsValid( last_sinkhole ) then return end
@@ -152,7 +162,17 @@ if SERVER then
 			guthscp106.use_sinkhole_ability( ply, guthscp106.SINKHOLE_SLOTS.B )
 		end,
 		[guthscp106.ABILITIES.ENTER_DIMENSION] = function( ply )
-			if guthscp106.is_in_pocket_dimension( ply ) then return end
+			--	sink to temporary sinkhole if inside pocket dimension
+			if guthscp106.is_in_pocket_dimension( ply ) then
+				local sinkhole = guthscp106.get_sinkhole( ply, guthscp106.SINKHOLE_SLOTS.TEMP )
+				if not IsValid( sinkhole ) then return end
+
+				guthscp106.sink_to( ply, sinkhole:GetPos(), false, true, function()
+					if not IsValid( sinkhole ) then return end
+					sinkhole:QueueRemove()
+				end )
+				return
+			end
 
 			--  direct sink to dimension if noclipping
 			if ply:GetMoveType() == MOVETYPE_NOCLIP then
@@ -174,19 +194,12 @@ if SERVER then
 			--  spawn sinkhole
 			local sinkhole = guthscp106.create_sinkhole( sinkhole_pos )
 			sinkhole.IsUseDisabled = true
+			guthscp106.set_sinkhole( ply, sinkhole, guthscp106.SINKHOLE_SLOTS.TEMP )
 
 			--  sink SCP-106 after some time
 			timer.Simple( config.sinkhole_anim_spawn_time * 0.5, function()
 				if not IsValid( sinkhole ) or not IsValid( ply ) then return end
-
 				guthscp106.sink_to_dimension( ply )
-
-				--  auto-destroy after some time
-				timer.Simple( config.sinkhole_anim_spawn_time, function()
-					if not IsValid( sinkhole ) then return end
-
-					sinkhole:QueueRemove()
-				end )
 			end )
 		end,
 	}
