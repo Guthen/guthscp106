@@ -153,7 +153,7 @@ hook.Add( "PlayerNoClip", "aaa_guthscp106:noclip", function( ply )
 	end
 end )
 
-hook.Add( "PlayerShouldTakeDamage", "guthscp106:invinsible", function( ply, attacker )
+hook.Add( "PlayerShouldTakeDamage", "guthscp106:invincible", function( ply, attacker )
 	if config.immortal and guthscp106.is_scp_106( ply ) then
 		return false
 	end

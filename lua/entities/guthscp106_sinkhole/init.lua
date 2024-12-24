@@ -112,7 +112,7 @@ function ENT:EndTouch( ent )
 end
 
 function ENT:UpdateTransmitState()
-	--  set as always so GetNearbyPreysCount
+	--  we always network this entity so GetNearbyPreysCount can return a correct value clientside when SCP-106 is far away.
 	return TRANSMIT_ALWAYS
 end
 
@@ -137,7 +137,7 @@ end
 local MAX_AUTHORIZATION_TIME = 30  	--  30 seconds for using the sinkhole, should be more than enough
 local MAX_DISTANCE_SQR = 128 * 128  --  128 hammer units of maximum distance
 net.Receive( "guthscp106:sinkhole", function( len, ply )
-	--  securiy checks
+	--  security checks
 	local data = authorized_players[ply]
 	if not data then
 		guthscp106:warning( "%s (%s) tried to use a sinkhole while not being authorized!", ply:GetName(), ply:SteamID() )
