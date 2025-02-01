@@ -118,7 +118,7 @@ function SWEP:Reload()
 	--  handle reload cooldown
 	if not can_reload then return end
 	can_reload = false
-	timer.Simple( .5, function() can_reload = true end )
+	timer.Simple( 0.5, function() can_reload = true end )
 
 	--  setup vars
 	local is_containing = guthscp106.is_containing( ply )
