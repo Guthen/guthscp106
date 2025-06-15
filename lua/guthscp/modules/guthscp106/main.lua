@@ -6,7 +6,7 @@ local MODULE = {
 	icon = "guthscp/icons/guthscp106.png",
 	version_url = "https://raw.githubusercontent.com/Guthen/guthscp106/master/lua/guthscp/modules/guthscp106/main.lua",
 	dependencies = {
-		base = "2.5.0",
+		base = "2.6.0",  --  save-per-map is from 2.6.0
 		guthscpkeycard = "optional:2.0.0",
 	},
 	requires = {
