@@ -112,6 +112,7 @@ MODULE.menu = {
 					desc = "Position of the pocket dimension to teleport SCP-106 and his victims",
 					default = vector_origin,
 					show_usepos = true,
+					save_per_map = true,
 				},
 				{
 					type = "Number",
@@ -428,6 +429,7 @@ MODULE.menu = {
 					desc = "The button map ID of the femur breaker",
 					default = -1,
 					show_use_entity_map_id = true,
+					save_per_map = true,
 				},
 				{
 					type = "Vector",
@@ -436,7 +438,8 @@ MODULE.menu = {
 					desc = "Position to teleport SCP-106 after the femur breaker have been triggered",
 					default = vector_origin,
 					show_usepos = true,
-				},
+					save_per_map = true,
+				}, 
 				{
 					type = "Number",
 					name = "Sink Delay",
